@@ -7,7 +7,6 @@ using gomoru.su;
 using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
 using UnityEditor.Animations;
-using UnityEngine;
 using VRC.Core;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
@@ -30,6 +29,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
     private Material[] targetMaterials;
     private ImmutableDictionary<ShaderProcessor, Material[]> shaderMaterialPair;
     private AnimatorController animatorController;
+    private AnimationClip blankClip;
 
     public ReadOnlySpan<ShaderProcessor> Processors => processors.AsSpan();
     public ReadOnlySpan<Renderer> TargetRenderers => targetRenderers;
@@ -73,6 +73,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
         GenerateParameters();
 
+        CompressionAnimatorParameters();
 
         var layer = blendTree.ToAnimatorControllerLayer(animatorController);
         animatorController.AddLayer(layer);
@@ -160,153 +161,13 @@ internal sealed class LightLimitChangerProcessor : IDisposable
         }
 
         var mam = go.AddComponent<ModularAvatarMenuItem>();
-        mam.Control.type = VRCExpressionsMenu.Control.ControlType.SubMenu;
+        mam.Control.type = VRCExMenuControlType.SubMenu;
         mam.MenuSource = SubmenuSource.Children;
         menuRoot = mam;
-    }
-
-    private void GenerateParameters()
-    {
-        var mapa = Component.gameObject.GetOrAddComponent<ModularAvatarParameters>();
-        mapa.parameters.AddRange(avatarParameters);
-
-        foreach (var parameter in mapa.parameters.AsSpan())
-        {
-            animatorController.AddParameter(new AnimatorControllerParameter()
-            {
-                name = parameter.nameOrPrefix,
-                defaultFloat = parameter.defaultValue,
-                defaultBool = parameter.defaultValue != 0,
-                defaultInt = (int)parameter.defaultValue,
-                type = parameter.syncType switch
-                {
-                    //ParameterSyncType.Int => AnimatorControllerParameterType.Int,
-                    //ParameterSyncType.Bool => AnimatorControllerParameterType.Bool,
-                    //ParameterSyncType.Float => AnimatorControllerParameterType.Float,
-                    //_ => default,
-                    _ => AnimatorControllerParameterType.Float, // Floatへ自動変換されるのでこれでOK
-                },
-            });
-        }
-    }
-
-    private void CreatePresetLoader()
-    {
-        var children = Component.GetComponentsInChildren<LightLimitChangerComponent>();
-        foreach(var x in children.Skip(1))
-        {
-            if (x.TryGetComponent<MAMenuInstaller>(out var c))
-                Object.DestroyImmediate(c);
-        }
-
-        var wd = Component.WriteDefaults != WriteDefaultsSetting.OFF;
-
-        var controller = new AnimatorController() { name = $"{LightLimitChanger.Title} Presets" };
-        AssetDatabase.AddObjectToAsset(controller, AssetContainer);
-
-        const string IsLocal = "IsLocal";
-        const string Preset = "LightLimitChangerPresetIndex";
-
-        controller.AddParameter(IsLocal, AnimatorControllerParameterType.Bool);
-        controller.AddParameter(Preset, AnimatorControllerParameterType.Int);
-
-        controller.AddLayer($"{LightLimitChanger.Title} Preset");
-        var layer = controller.layers[0];
-        var stateMachine = layer.stateMachine;
 
         var blank = new AnimationClip() { name = "Blank" };
         AssetDatabase.AddObjectToAsset(blank, AssetContainer);
-        var pos = stateMachine.entryPosition + new Vector3(200, 0);
-        var idle = stateMachine.AddState("Idle", pos);
-        idle.writeDefaultValues = wd;
-        idle.motion = blank;
-
-        var presetMenuRoot = menuRoot.GetOrAdd(L10n.TrStr("menu:preset"), menu => (VRCExMenuControlType.SubMenu, null));
-        foreach (var (child, i) in children.Select((x, i) => (x, i + 1)))
-        {
-            var menuName = i == 1 ? L10n.TrStr("menu:preset/default-preset", "Default") : child.name;
-            var state = stateMachine.AddState($"{i}", new Vector3((pos.x + stateMachine.exitPosition.x) / 2, pos.y + 80 * (i - 1)));
-            state.motion = blank;
-            state.writeDefaultValues = wd;
-            Transit(idle, state, transit =>
-            {
-                transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal);
-                transit.AddCondition(AnimatorConditionMode.Equals, i, Preset);
-            });
-            Transit(state.AddExitTransition(), transit => transit.AddCondition(AnimatorConditionMode.NotEqual, i, Preset));
-
-            var dr = state.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
-            if (dr == null)
-                continue; // 🤔 Why?
-
-            var parameters = animatorController.parameters;
-
-            A(child.General.LightingControl);
-            A(child.General.ColorControl);
-            A(child.LilToon);
-            A(child.Poiyomi);
-            A(child.UnlitWF);
-
-            presetMenuRoot.GetOrAdd(menuName, menu =>
-            {
-                menu.automaticValue = true;
-                return (VRCExMenuControlType.Button, Preset, i);
-            });
-
-            void A<T>(T settings) where T : ISettings
-            {
-                var parameterBuffer = (stackalloc float[8]);
-                foreach (var parameterInfo in settings.AllParameterFields().Select(x => new ParameterInfo(settings, x)))
-                {
-                    ReadOnlySpan<float> values = parameterBuffer[..parameterInfo.Parameter.GetValues(parameterBuffer)];
-
-                    for (int i = 0; i < values.Length; i++)
-                    {
-                        var value = Utils.NormalizeInRange(values[i], parameterInfo.Range.x, parameterInfo.Range.y);
-                        string postfix = values.Length == 1 ? "" : parameterInfo.ParameterType == typeof(Vector4) ? $".{"xyzw"[i]}" : $".{"rgba"[i]}";
-                        var name = $"{SettingsFieldInfo<T>.ParameterPrefix}{parameterInfo.Name}{postfix}";
-                        if (parameters.Any(x => x.name == name))
-                            dr.parameters.Add(new() { name = name, type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set, value = value });
-                    }
-                }
-            }
-        }
-
-        var mama = Component.gameObject.AddComponent<MAMergeAnimator>();
-        mama.matchAvatarWriteDefaults = Component.WriteDefaults == WriteDefaultsSetting.MatchAvatar;
-        mama.layerType = VRCAvatarDescriptor.AnimLayerType.FX;
-        mama.animator = controller;
-
-
-    }
-
-    private static void Transit(AnimatorState from, AnimatorState to, Action<AnimatorStateTransition> custom = null)
-        => Transit(from.AddTransition(to), custom);
-
-    private static void Transit(AnimatorStateTransition transit, Action<AnimatorStateTransition> custom = null)
-    {
-        transit.hasFixedDuration = true;
-        transit.duration = 0;
-        transit.hasExitTime = false;
-        custom?.Invoke(transit);
-    }
-
-    private static void RemoveEmptySubMenus(MAMenuItem menu)
-    {
-        if (menu.Control.type != VRCExpressionsMenu.Control.ControlType.SubMenu)
-            return;
-
-        var children = menu.transform.Cast<Transform>().Select(x => x.GetComponent<MAMenuItem>()).Where(x => x != null);
-        if (!children.Any())
-        {
-            Object.DestroyImmediate(menu);
-            return;
-        }
-
-        foreach (var child in children)
-        {
-            RemoveEmptySubMenus(child);
-        }
+        blankClip = blank;
     }
 
     private void ConfigureSettings<TSettings>(TSettings settings) where TSettings : ISettings, new()
@@ -362,7 +223,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                 var group = GetBlendTreeGroup(SettingsFieldInfo<TSettings>.ParameterPrefix);
                 ReadOnlySpan<float> values = parameterBuffer[..parameterInfo.Parameter.GetValues(parameterBuffer)];
 
-                for(int i = 0; i < values.Length; i++)
+                for (int i = 0; i < values.Length; i++)
                 {
                     var value = values[i];
                     string postfix = values.Length == 1 ? "" : t == typeof(Vector4) ? $".{"xyzw"[i]}" : $".{"rgba"[i]}";
@@ -448,7 +309,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                                 processor.ConfigureShaderSpecificAnimation(context);
                             }
                             var menuPath = $"{parameterInfo.Name}{(values.Length == 1 ? "" : $"/{(char)(postfix[1] & ~0x20)}")}";
-                            var menuItem = menuGroup.GetOrAdd(menuPath, menu => (parameterInfo.ParameterType == typeof(bool) ? VRCExMenuControlType.Toggle : VRCExMenuControlType.RadialPuppet, avatarParameter.nameOrPrefix, parameterInfo.ParameterType == typeof(bool) ? 1 : 0)); 
+                            var menuItem = menuGroup.GetOrAdd(menuPath, menu => (parameterInfo.ParameterType == typeof(bool) ? VRCExMenuControlType.Toggle : VRCExMenuControlType.RadialPuppet, avatarParameter.nameOrPrefix, parameterInfo.ParameterType == typeof(bool) ? 1 : 0));
                             if (menuItem.Control.icon == null)
                             {
                                 menuItem.Control.icon = parameterInfo.Icon;
@@ -459,6 +320,257 @@ internal sealed class LightLimitChangerProcessor : IDisposable
             }
         }
     }
+
+    private void GenerateParameters()
+    {
+        var mapa = Component.gameObject.GetOrAddComponent<ModularAvatarParameters>();
+        mapa.parameters.AddRange(avatarParameters);
+
+        foreach (var parameter in mapa.parameters.AsSpan())
+        {
+            animatorController.AddParameter(new AnimatorControllerParameter()
+            {
+                name = parameter.nameOrPrefix,
+                defaultFloat = parameter.defaultValue,
+                defaultBool = parameter.defaultValue != 0,
+                defaultInt = (int)parameter.defaultValue,
+                type = parameter.syncType switch
+                {
+                    //ParameterSyncType.Int => AnimatorControllerParameterType.Int,
+                    //ParameterSyncType.Bool => AnimatorControllerParameterType.Bool,
+                    //ParameterSyncType.Float => AnimatorControllerParameterType.Float,
+                    //_ => default,
+                    _ => AnimatorControllerParameterType.Float, // Floatへ自動変換されるのでこれでOK
+                },
+            });
+        }
+    }
+
+    private void CompressionAnimatorParameters()
+    {
+        //TODO: やりかけ
+        var mapa = Component.gameObject.GetOrAddComponent<ModularAvatarParameters>();
+        foreach(ref var param in mapa.parameters.AsSpan())
+        {
+            param.localOnly = true;
+        }
+
+        var controller = new AnimatorController() { name = $"{LightLimitChanger.Title} Parameter Compressor" };
+        AssetDatabase.AddObjectToAsset(controller, AssetContainer);
+
+        const string Index = "LightLimitChangerParameterSyncerIndex";
+        const string Value = "LightLimitChangerParameterSyncerValue";
+
+        controller.AddParameter(Index, AnimatorControllerParameterType.Int);
+        controller.AddParameter(Value, AnimatorControllerParameterType.Float);
+
+        controller.AddLayer(controller.name);
+        var wd = Component.WriteDefaults != WriteDefaultsSetting.OFF;
+        var layer = controller.layers[0];
+        var stateMachine = layer.stateMachine;
+
+        var idle = stateMachine.AddState("Idle");
+        idle.writeDefaultValues = wd;
+        idle.motion = blankClip;
+
+        const string IsLocal = "IsLocal";
+        {
+            var remote = stateMachine.AddState("Remote");
+            remote.writeDefaultValues = wd;
+            remote.motion = blankClip;
+            Transit(idle, remote, transit => transit.AddCondition(AnimatorConditionMode.IfNot, 0, IsLocal));
+            var parameters = mapa.parameters.AsSpan();
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                var param = parameters[i];
+                var set = stateMachine.AddState($"Set {param.nameOrPrefix}");
+                set.writeDefaultValues = wd;
+                set.motion = blankClip;
+
+                Transit(remote, set, transit => transit.AddCondition(AnimatorConditionMode.Equals, i + 1, Index));
+
+                var dr = set.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
+                dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Copy, source = Value, name = param.nameOrPrefix });
+                dr = set.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
+                //dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set, name = Index, value = 0 });
+                //dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set, name = Value, value = 0 });
+
+                //Transit(remote, remote, transit => transit.AddCondition(AnimatorConditionMode.IfNot, 0, IsLocal));
+                Transit(set, remote, transit => transit.AddCondition(AnimatorConditionMode.NotEqual, i + 1, Index));
+            }
+        }
+        {
+            var local = stateMachine.AddState("Local");
+            local.writeDefaultValues = wd;
+            local.motion = blankClip;
+            Transit(idle, local, transit => transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal));
+
+            var syncStart = stateMachine.AddState("Sync Start");
+            syncStart.writeDefaultValues = wd;
+            syncStart.motion = blankClip;
+            Transit(local, syncStart, transit =>
+            {
+                transit.duration = 1 / 30f * 2;
+                transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal);
+            });
+
+            var preState = syncStart;
+
+            var parameters = mapa.parameters.AsSpan();
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                var param = parameters[i];
+                var load = stateMachine.AddState($"Load {param.nameOrPrefix}");
+                load.writeDefaultValues = wd;
+                load.motion = blankClip;
+
+                Transit(preState, load, transit =>
+                {
+                    transit.duration = 1/30f * 2;
+                    transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal);
+                });
+
+                var dr = load.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
+                dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Copy, source = param.nameOrPrefix, name = Value });
+
+                dr = load.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
+                dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set, name = Index, value = i + 1 });
+
+                preState = load;
+            }
+
+            Transit(preState, local, transit => transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal));
+        }
+
+        mapa.parameters.Add(new() { syncType = ParameterSyncType.Int, defaultValue = 0, nameOrPrefix = Index, saved = false, });
+        mapa.parameters.Add(new() { syncType = ParameterSyncType.Float, defaultValue = 0, nameOrPrefix = Value, saved = false, });
+
+        var mama = Component.gameObject.AddComponent<MAMergeAnimator>();
+        mama.matchAvatarWriteDefaults = Component.WriteDefaults == WriteDefaultsSetting.MatchAvatar;
+        mama.layerType = VRCAvatarDescriptor.AnimLayerType.FX;
+        mama.animator = controller;
+        mama.pathMode = MergeAnimatorPathMode.Absolute;
+    }
+
+    private void CreatePresetLoader()
+    {
+        var children = Component.GetComponentsInChildren<LightLimitChangerComponent>();
+        foreach(var x in children.Skip(1))
+        {
+            if (x.TryGetComponent<MAMenuInstaller>(out var c))
+                Object.DestroyImmediate(c);
+        }
+
+        var wd = Component.WriteDefaults != WriteDefaultsSetting.OFF;
+
+        var controller = new AnimatorController() { name = $"{LightLimitChanger.Title} Presets" };
+        AssetDatabase.AddObjectToAsset(controller, AssetContainer);
+
+        const string IsLocal = "IsLocal";
+        const string Preset = "LightLimitChangerPresetIndex";
+
+        controller.AddParameter(IsLocal, AnimatorControllerParameterType.Bool);
+        controller.AddParameter(Preset, AnimatorControllerParameterType.Int);
+
+        controller.AddLayer($"{LightLimitChanger.Title} Preset");
+        var layer = controller.layers[0];
+        var stateMachine = layer.stateMachine;
+
+        var blank = blankClip;
+        var pos = stateMachine.entryPosition + new Vector3(200, 0);
+        var idle = stateMachine.AddState("Idle", pos);
+        idle.writeDefaultValues = wd;
+        idle.motion = blank;
+
+        var presetMenuRoot = menuRoot.GetOrAdd(L10n.TrStr("menu:preset"), menu => (VRCExMenuControlType.SubMenu, null));
+        foreach (var (child, i) in children.Select((x, i) => (x, i + 1)))
+        {
+            var menuName = i == 1 ? L10n.TrStr("menu:preset/default-preset", "Default") : child.name;
+            var state = stateMachine.AddState($"{i}", new Vector3((pos.x + stateMachine.exitPosition.x) / 2, pos.y + 80 * (i - 1)));
+            state.motion = blank;
+            state.writeDefaultValues = wd;
+            Transit(idle, state, transit =>
+            {
+                transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal);
+                transit.AddCondition(AnimatorConditionMode.Equals, i, Preset);
+            });
+            Transit(state.AddExitTransition(), transit => transit.AddCondition(AnimatorConditionMode.NotEqual, i, Preset));
+
+            var dr = state.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
+            if (dr == null)
+                continue; // 🤔 Why?
+
+            var parameters = animatorController.parameters;
+
+            A(child.General.LightingControl);
+            A(child.General.ColorControl);
+            A(child.LilToon);
+            A(child.Poiyomi);
+            A(child.UnlitWF);
+
+            presetMenuRoot.GetOrAdd(menuName, menu =>
+            {
+                menu.automaticValue = true;
+                return (VRCExMenuControlType.Button, Preset, i);
+            });
+
+            void A<T>(T settings) where T : ISettings
+            {
+                var parameterBuffer = (stackalloc float[8]);
+                foreach (var parameterInfo in settings.AllParameterFields().Select(x => new ParameterInfo(settings, x)))
+                {
+                    ReadOnlySpan<float> values = parameterBuffer[..parameterInfo.Parameter.GetValues(parameterBuffer)];
+
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        var value = Utils.NormalizeInRange(values[i], parameterInfo.Range.x, parameterInfo.Range.y);
+                        string postfix = values.Length == 1 ? "" : parameterInfo.ParameterType == typeof(Vector4) ? $".{"xyzw"[i]}" : $".{"rgba"[i]}";
+                        var name = $"{SettingsFieldInfo<T>.ParameterPrefix}{parameterInfo.Name}{postfix}";
+                        if (parameters.Any(x => x.name == name))
+                            dr.parameters.Add(new() { name = name, type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set, value = value });
+                    }
+                }
+            }
+        }
+
+        var mama = Component.gameObject.AddComponent<MAMergeAnimator>();
+        mama.matchAvatarWriteDefaults = Component.WriteDefaults == WriteDefaultsSetting.MatchAvatar;
+        mama.layerType = VRCAvatarDescriptor.AnimLayerType.FX;
+        mama.animator = controller;
+
+
+    }
+
+    private static void RemoveEmptySubMenus(MAMenuItem menu)
+    {
+        if (menu.Control.type != VRCExpressionsMenu.Control.ControlType.SubMenu)
+            return;
+
+        var children = menu.transform.Cast<Transform>().Select(x => x.GetComponent<MAMenuItem>()).Where(x => x != null);
+        if (!children.Any())
+        {
+            Object.DestroyImmediate(menu);
+            return;
+        }
+
+        foreach (var child in children)
+        {
+            RemoveEmptySubMenus(child);
+        }
+    }
+
+    private static void Transit(AnimatorState from, AnimatorState to, Action<AnimatorStateTransition> custom = null)
+        => Transit(from.AddTransition(to), custom);
+
+    private static void Transit(AnimatorStateTransition transit, Action<AnimatorStateTransition> custom = null)
+    {
+        transit.hasFixedDuration = true;
+        transit.duration = 0;
+        transit.hasExitTime = false;
+        custom?.Invoke(transit);
+    }
+
 
     private DirectBlendTree GetBlendTreeGroup(string name)
     {
