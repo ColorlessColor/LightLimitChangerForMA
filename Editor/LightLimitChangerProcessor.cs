@@ -206,7 +206,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
         foreach (var entry in entries)
         {
             var items = entry.Value.AsSpan();
-            bool generateEmpty = entry.Value.Any(x => x.VectorFieldAttribute != null && x.Parameter.Enable && x.Parameter.IsAnimated);
+            bool generateEmpty = entry.Value.Any(x => x.VectorFieldAttribute != null && x.Parameter.Enable && x.Parameter.Animation);
             foreach (var parameterInfo in items)
             {
                 var parameter = parameterInfo.Parameter;
@@ -226,7 +226,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                     }
                 }
 
-                if ((!parameter.Enable || !parameter.IsAnimated) && !generateEmpty)
+                if ((!parameter.Enable || !parameter.Animation) && !generateEmpty)
                     continue;
 
                 var group = GetBlendTreeGroup(SettingsFieldInfo<TSettings>.ParameterPrefix);
@@ -240,7 +240,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                     var anim = new AnimationClip() { name = $"{LightLimitChanger.Title} {name}" };
                     AssetDatabase.AddObjectToAsset(anim, AssetContainer);
 
-                    if (!parameter.IsAnimated)
+                    if (!parameter.Animation)
                     {
                         var tree = group.AddMotion(anim);
                         var context = new ConfigureEmptyAnimationContext()

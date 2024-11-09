@@ -12,32 +12,32 @@ public class LilDistanceFadeSettings : ISettings
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFadeColor")]
     [MenuIcon(Icons.Color)]
-    public Parameter<Color> FadeColor = new (Color.black) {Enable = false, IsAnimated = false};
+    public Parameter<Color> FadeColor = new (Color.black) {Enable = false, Animation = false};
     
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [VectorField(VectorField.X)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFade.x")]
     [MenuIcon(Icons.DistanceFadeX)]
     [Range(0, 1)]
-    public Parameter<float> Start = new (0.1f) {Enable = false, IsAnimated = false};
+    public Parameter<float> Start = new (0.1f) {Enable = false, Animation = false};
     
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [VectorField(VectorField.Y)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFade.y")]
     [MenuIcon(Icons.DistanceFadeY)]
     [Range(0, 1)]
-    public Parameter<float> End = new (0.01f) {Enable = false, IsAnimated = false};
+    public Parameter<float> End = new (0.01f) {Enable = false, Animation = false};
     
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [VectorField(VectorField.Z)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFade.z")]
     [MenuIcon(Icons.DistanceFadeZ)]
     [Range(0, 1)]
-    public Parameter<float> Strength = new (0.0f) {Enable = false, IsAnimated = false};
+    public Parameter<float> Strength = new (0.0f) {Enable = false, Animation = false};
     
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [VectorField(VectorField.W)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFade.w")]
     [MenuIcon(Icons.DistanceFadeW)]
-    public Parameter<bool> BackfaceForceShadow = new (false) {Enable = false, IsAnimated = false};
+    public Parameter<bool> BackfaceForceShadow = new (false) {Enable = false, Animation = false};
 }

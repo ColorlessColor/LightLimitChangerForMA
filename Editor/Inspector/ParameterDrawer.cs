@@ -1,4 +1,4 @@
-﻿namespace io.github.azukimochi;
+namespace io.github.azukimochi;
 
 [CustomPropertyDrawer(typeof(Parameter<>), true)]
 internal sealed class ParameterDrawer : PropertyDrawer
@@ -111,12 +111,12 @@ internal sealed class ParameterDrawer : PropertyDrawer
     public static void Draw(Rect position, SerializedProperty property, GUIContent label, bool showInitialSlider = true, Vector2? range = null, Vector2? minMaxRange = null, bool advancedMode = false)
     {
         using var scope = new PropertyScope(position, label, property);
-        var valueProp = property.FindPropertyRelative("Value");
-        var minMaxRangeProp = property.FindPropertyRelative("MinMaxRange");
-        var enableProp = property.FindPropertyRelative("Enable");
-        var isAnimatedProp = property.FindPropertyRelative("IsAnimated");
-        var savedProp = property.FindPropertyRelative("Saved");
-        var syncedProp = property.FindPropertyRelative("Synced");
+        var valueProp = property.FindPropertyRelative(nameof(Parameter<float>.Value));
+        var minMaxRangeProp = property.FindPropertyRelative(nameof(Parameter.MinMaxRange));
+        var enableProp = property.FindPropertyRelative(nameof(Parameter.Enable));
+        var isAnimatedProp = property.FindPropertyRelative(nameof(Parameter.Animation));
+        var savedProp = property.FindPropertyRelative(nameof(Parameter.Saved));
+        var syncedProp = property.FindPropertyRelative(nameof(Parameter.Synced));
         position.height = EditorGUIUtility.singleLineHeight;
 
         var p = position;

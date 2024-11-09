@@ -13,7 +13,7 @@ public abstract class Parameter
     /// <summary>
     /// アニメーション・メニューを生成する
     /// </summary>
-    public bool IsAnimated = true;
+    public bool Animation = true;
 
     /// <summary>
     /// 値をセーブする
