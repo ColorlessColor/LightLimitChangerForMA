@@ -5,39 +5,45 @@ using MenuItem = nadena.dev.modular_avatar.core.ModularAvatarMenuItem;
 
 internal static class MenuItemExt
 {
-    public static MenuItem GetOrAdd(this MenuItem menu, string path)
-        => menu.GetOrAdd(path, default(Action<MenuItem>));
-
-    public static MenuItem GetOrAdd(this MenuItem menu, string path, Func<MenuItem, (VRCExMenuControlType ControlType, string ParameterName)> factory = null)
-        => menu.GetOrAdd(path, factory is null ? null : menu =>
-        {
-            var x = factory(menu);
-            return (x.ControlType, x.ParameterName, 0);
-        });
-
-    public static MenuItem GetOrAdd(this MenuItem menu, string path, Func<MenuItem, (VRCExMenuControlType ControlType, string ParameterName, float Value)> factory = null)
+    public struct MenuItemProperties
     {
-        return menu.GetOrAdd(path, menu =>
+        public VRCExMenuControlType? ControlType;
+        public string ParameterName;
+        public float? Value;
+
+        public static implicit operator MenuItemProperties(ValueTuple<VRCExMenuControlType, string> tuple) => new() { ControlType = tuple.Item1, ParameterName = tuple.Item2 };
+        public static implicit operator MenuItemProperties(ValueTuple<VRCExMenuControlType, string, float> tuple) => new() { ControlType = tuple.Item1, ParameterName = tuple.Item2, Value = tuple.Item3 };
+    }
+
+    public static MenuItem GetOrAdd(this MenuItem menu, string path, Func<MenuItem, MenuItemProperties> factory = null, Texture2D icon = null)
+    {
+        void Action(MenuItem menu)
         {
             if (factory == null)
                 return;
 
-            var (type, param, value) = factory(menu);
-            menu.Control.type = type;
-            var p = new VRCExpressionsMenu.Control.Parameter() { name = param };
-            if (type == VRCExMenuControlType.RadialPuppet)
+            var x = factory(menu);
+            if (x.ControlType != null)
+                menu.Control.type = x.ControlType.Value;
+            if (x.ParameterName != null)
             {
-                menu.Control.subParameters = new[] { p };
+                var p = new VRCExpressionsMenu.Control.Parameter() { name = x.ParameterName };
+                if (x.ControlType == VRCExMenuControlType.RadialPuppet)
+                {
+                    menu.Control.subParameters = new[] { p };
+                }
+                else
+                {
+                    menu.Control.parameter = p;
+                }
             }
-            else
-            {
-                menu.Control.parameter = p;
-            }
-            menu.Control.value = value;
-        });
+            if (x.Value != null)
+                menu.Control.value = x.Value.Value;
+        }
+        return menu.GetOrAdd(path, Action, icon);
     }
 
-    public static MenuItem GetOrAdd(this MenuItem menu, string path, Action<MenuItem> action = null)
+    public static MenuItem GetOrAdd(this MenuItem menu, string path, Action<MenuItem> action, Texture2D icon = null)
     {
         var split = path.Split("/");
         bool flag = false;
@@ -59,6 +65,7 @@ internal static class MenuItemExt
                 menu = child.gameObject.AddComponent<MenuItem>();
                 menu.Control.type = VRCExpressionsMenu.Control.ControlType.SubMenu;
                 menu.MenuSource = nadena.dev.modular_avatar.core.SubmenuSource.Children;
+                menu.Control.icon = icon;
             }
         }
 

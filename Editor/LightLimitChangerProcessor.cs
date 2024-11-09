@@ -317,7 +317,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                                 processor.ConfigureShaderSpecificAnimation(context);
                             }
                             var menuPath = $"{parameterInfo.Name}{(values.Length == 1 ? "" : $"/{(char)(postfix[1] & ~0x20)}")}";
-                            var menuItem = menuGroup.GetOrAdd(menuPath, menu =>
+                            var menuItem = menuGroup.GetOrAdd(menuPath, (MAMenuItem menu) =>
                             {
                                 if (parameterInfo.ParameterType == typeof(bool))
                                 {
@@ -332,11 +332,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                                 {
                                     return (VRCExMenuControlType.RadialPuppet, avatarParameter.nameOrPrefix, 0);
                                 }
-                            });
-                            if (menuItem.Control.icon == null)
-                            {
-                                menuItem.Control.icon = parameterInfo.Icon;
-                            }
+                            }, parameterInfo.Icon);
                         }
                     }
                 }
