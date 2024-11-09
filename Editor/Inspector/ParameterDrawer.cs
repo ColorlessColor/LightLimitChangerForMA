@@ -169,12 +169,10 @@ internal sealed class ParameterDrawer : PropertyDrawer
                 }
             }
 
+            DrawPrefixLabel(p, L10n.Tr($"common:label/{(isAnimatedProp.boolValue ? "initial-value" : "override-value")}"));
+
             if (!property.isExpanded || !advancedMode)
                 return;
-
-            p.width = EditorStyles.label.CalcSize(L10n.Tr("common:label/initialvalue")).x;
-            p.x -= p.width + 8;
-            EditorGUI.LabelField(p, L10n.Tr("common:label/initialvalue"));
 
             if (showInitialSlider && minMaxRange is { } minMax)
             {
@@ -183,9 +181,7 @@ internal sealed class ParameterDrawer : PropertyDrawer
                 p.x += EditorGUIUtility.labelWidth;
                 p.width -= EditorGUIUtility.labelWidth;
                 MinMaxSlider(p, minMaxRangeProp, GUIContent.none, minMax);
-                p.width = EditorStyles.label.CalcSize(L10n.Tr("common:label/range")).x;
-                p.x -= p.width + 8;
-                EditorGUI.LabelField(p, L10n.Tr("common:label/range"));
+                DrawPrefixLabel(p, L10n.Tr("common:label/range"));
             }
 
             position.y += EditorGUIUtility.singleLineHeight;
@@ -202,15 +198,20 @@ internal sealed class ParameterDrawer : PropertyDrawer
             DrawEnableButton(ref p, savedProp, L10n.TrStr("common:label/saved"));
             DrawEnableButton(ref p, syncedProp, L10n.TrStr("common:label/synced"));
 
-            p.width = EditorStyles.label.CalcSize(L10n.Tr("common:label/option")).x;
-            p.x = position.x + EditorGUIUtility.labelWidth - (p.width + 8);
-            EditorGUI.LabelField(p, L10n.Tr("common:label/option"));
+            DrawPrefixLabel(p, L10n.Tr("common:label/option"));
 
         }
         finally
         {
             EditorGUI.EndDisabledGroup();
         }
+    }
+
+    private static void DrawPrefixLabel(Rect position, GUIContent label)
+    {
+        position.width = EditorStyles.label.CalcSize(label).x;
+        position.x -= position.width + 8;
+        EditorGUI.LabelField(position, label);
     }
 
     private static void DrawEnableButton(ref Rect p, SerializedProperty prop, string label = null)

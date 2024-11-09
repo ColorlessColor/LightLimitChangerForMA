@@ -3,17 +3,20 @@ msgstr ""
 "Language: ja\n"
 
 ## メニュー項目のラベル
-msgid "common:label/initialvalue"
-msgstr "初期値"
+msgid "common:label/initial-value"
+msgstr "初期値:"
+
+msgid "common:label/override-value"
+msgstr "上書き値:"
 
 msgid "common:label/range"
-msgstr "操作範囲"
+msgstr "操作範囲:"
+
+msgid "common:label/option"
+msgstr "オプション:"
 
 msgid "common:label/enable"
 msgstr "有効"
-
-msgid "common:label/option"
-msgstr "オプション"
 
 msgid "common:label/animation"
 msgstr "アニメーション制御"
