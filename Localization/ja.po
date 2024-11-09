@@ -373,3 +373,9 @@ msgstr ""
 
 msgid "settings:other/language/label"
 msgstr "言語設定"
+
+msgid "settings:other/compress-expression-parameters/label"
+msgstr "パラメーター圧縮"
+
+msgid "settings:other/compress-expression-parameters/description"
+msgstr "パラメーター圧縮"

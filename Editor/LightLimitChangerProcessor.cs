@@ -35,6 +35,14 @@ internal sealed class LightLimitChangerProcessor : IDisposable
     public ReadOnlySpan<Renderer> TargetRenderers => targetRenderers;
     public ReadOnlySpan<Material> TargetMaterials => targetMaterials;
 
+    #region ParameterNames
+
+    private const string ParameterName_ParameterSyncerIndex = "LightLimitChangerParameterSyncerIndex";
+    private const string ParameterName_ParameterSyncerValue = "LightLimitChangerParameterSyncerValue";
+    private const string ParameterName_ParameterSyncerOverrideIndex = "LightLimitChangerParameterSyncerOverrideIndex";
+
+    #endregion
+
     public LightLimitChangerProcessor(BuildContext context)
     {
         this.context = context;
@@ -309,7 +317,22 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                                 processor.ConfigureShaderSpecificAnimation(context);
                             }
                             var menuPath = $"{parameterInfo.Name}{(values.Length == 1 ? "" : $"/{(char)(postfix[1] & ~0x20)}")}";
-                            var menuItem = menuGroup.GetOrAdd(menuPath, menu => (parameterInfo.ParameterType == typeof(bool) ? VRCExMenuControlType.Toggle : VRCExMenuControlType.RadialPuppet, avatarParameter.nameOrPrefix, parameterInfo.ParameterType == typeof(bool) ? 1 : 0));
+                            var menuItem = menuGroup.GetOrAdd(menuPath, menu =>
+                            {
+                                if (parameterInfo.ParameterType == typeof(bool))
+                                {
+                                    return (VRCExMenuControlType.Toggle, avatarParameter.nameOrPrefix, 1);
+                                }
+                                else if (Component.General.CompressionExpressionParameters)
+                                {
+                                    menu.Control.parameter = new() { name = ParameterName_ParameterSyncerOverrideIndex };
+                                    return (VRCExMenuControlType.RadialPuppet, avatarParameter.nameOrPrefix, avatarParameters.Count);
+                                }
+                                else
+                                {
+                                    return (VRCExMenuControlType.RadialPuppet, avatarParameter.nameOrPrefix, 0);
+                                }
+                            });
                             if (menuItem.Control.icon == null)
                             {
                                 menuItem.Control.icon = parameterInfo.Icon;
@@ -348,6 +371,9 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
     private void CompressionAnimatorParameters()
     {
+        if (!Component.General.CompressionExpressionParameters)
+            return;
+
         //TODO: やりかけ
         var mapa = Component.gameObject.GetOrAddComponent<ModularAvatarParameters>();
         foreach(ref var param in mapa.parameters.AsSpan())
@@ -358,11 +384,13 @@ internal sealed class LightLimitChangerProcessor : IDisposable
         var controller = new AnimatorController() { name = $"{LightLimitChanger.Title} Parameter Compressor" };
         AssetDatabase.AddObjectToAsset(controller, AssetContainer);
 
-        const string Index = "LightLimitChangerParameterSyncerIndex";
-        const string Value = "LightLimitChangerParameterSyncerValue";
+        const string Index = ParameterName_ParameterSyncerIndex;
+        const string Value = ParameterName_ParameterSyncerValue;
+        const string Override = ParameterName_ParameterSyncerOverrideIndex;
 
         controller.AddParameter(Index, AnimatorControllerParameterType.Int);
         controller.AddParameter(Value, AnimatorControllerParameterType.Float);
+        controller.AddParameter(Override, AnimatorControllerParameterType.Int);
 
         controller.AddLayer(controller.name);
         var wd = Component.WriteDefaults != WriteDefaultsSetting.OFF;
@@ -398,21 +426,42 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
                 //Transit(remote, remote, transit => transit.AddCondition(AnimatorConditionMode.IfNot, 0, IsLocal));
                 Transit(set, remote, transit => transit.AddCondition(AnimatorConditionMode.NotEqual, i + 1, Index));
+                Transit(set, set, transit =>
+                {
+                    transit.duration = 2f / 30f;
+                    transit.AddCondition(AnimatorConditionMode.Equals, i + 1, Index);
+                });
             }
         }
         {
+            var localFirstTime = stateMachine.AddState("Local [First]");
+            localFirstTime.writeDefaultValues = wd;
+            localFirstTime.motion = blankClip;
+            Transit(idle, localFirstTime, transit => transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal));
+
             var local = stateMachine.AddState("Local");
             local.writeDefaultValues = wd;
             local.motion = blankClip;
-            Transit(idle, local, transit => transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal));
+            //Transit(idle, local, transit => transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal));
 
             var syncStart = stateMachine.AddState("Sync Start");
             syncStart.writeDefaultValues = wd;
             syncStart.motion = blankClip;
             Transit(local, syncStart, transit =>
             {
+                transit.duration = 5 / 30f;
+                transit.AddCondition(AnimatorConditionMode.Equals, 0, Override);
+            });
+
+            Transit(localFirstTime, syncStart, transit => transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal));
+
+            var overrideStart = stateMachine.AddState("Override Sync Start");
+            overrideStart.writeDefaultValues = wd;
+            overrideStart.motion = blankClip;
+            Transit(local, overrideStart, transit =>
+            {
                 transit.duration = 1 / 30f * 2;
-                transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal);
+                transit.AddCondition(AnimatorConditionMode.NotEqual, 0, Override);
             });
 
             var preState = syncStart;
@@ -427,24 +476,42 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
                 Transit(preState, load, transit =>
                 {
-                    transit.duration = 1/30f * 2;
+                    transit.duration = 2 / 30f;
                     transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal);
                 });
 
                 var dr = load.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
                 dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Copy, source = param.nameOrPrefix, name = Value });
-
-                dr = load.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
                 dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set, name = Index, value = i + 1 });
 
                 preState = load;
-            }
 
+                Transit(load, overrideStart, transit => transit.AddCondition(AnimatorConditionMode.NotEqual, 0, Override));
+            }
             Transit(preState, local, transit => transit.AddCondition(AnimatorConditionMode.If, 0, IsLocal));
+
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                var param = parameters[i];
+                var @override = stateMachine.AddState($"Override {param.nameOrPrefix}");
+                @override.writeDefaultValues = wd;
+                @override.motion = blankClip;
+
+                Transit(overrideStart, @override, transit => transit.AddCondition(AnimatorConditionMode.Equals, i + 1, Override));
+
+                var dr = @override.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
+                dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Copy, source = param.nameOrPrefix, name = Value });
+                dr.parameters.Add(new() { type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set, name = Index, value = i + 1 });
+
+                Transit(@override, @override, transit => transit.AddCondition(AnimatorConditionMode.Equals, i + 1, Override));
+                Transit(@override, local, transit => transit.AddCondition(AnimatorConditionMode.NotEqual, i + 1, Override));
+            }
         }
 
         mapa.parameters.Add(new() { syncType = ParameterSyncType.Int, defaultValue = 0, nameOrPrefix = Index, saved = false, });
         mapa.parameters.Add(new() { syncType = ParameterSyncType.Float, defaultValue = 0, nameOrPrefix = Value, saved = false, });
+        mapa.parameters.Add(new() { syncType = ParameterSyncType.Int, defaultValue = 0, nameOrPrefix = Override, saved = false, localOnly = true, });
 
         var mama = Component.gameObject.AddComponent<MAMergeAnimator>();
         mama.matchAvatarWriteDefaults = Component.WriteDefaults == WriteDefaultsSetting.MatchAvatar;

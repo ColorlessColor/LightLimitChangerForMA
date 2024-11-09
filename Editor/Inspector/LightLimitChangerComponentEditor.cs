@@ -117,6 +117,14 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             {
                 EditorGUILayout.HelpBox(L10n.TrStr("settings:other/target_shader/description"), MessageType.Info);
             }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField(L10n.Tr("settings:other/compress-expression-parameters/label"), EditorStyles.boldLabel);
+            ParameterDrawer.PopupCheckbox(EditorGUILayout.GetControlRect(), serializedObject.FindProperty($"General.{nameof(GeneralSettings.CompressionExpressionParameters)}"), L10n.Tr("settings:other/compress-expression-parameters/label"));
+            if (ShowDescriptions)
+            {
+                EditorGUILayout.HelpBox(L10n.TrStr("settings:other/compress-expression-parameters/description"), MessageType.Info);
+            }
         }
         
         EditorGUILayout.Space();

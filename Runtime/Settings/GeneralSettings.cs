@@ -4,19 +4,14 @@
 public sealed class GeneralSettings
 {
     /// <summary>
-    /// アニメーションやメニューを生成する
-    /// </summary>
-    public bool AllowParameterController = true;
-
-    /// <summary>
-    /// マテリアルの設定を上書きする
-    /// </summary>
-    public bool OverwriteMaterialParameters = true;
-
-    /// <summary>
     /// AnchorOverrideとRoot Boneを上書きする（しかしどこに？）
     /// </summary>
     public bool OverwriteMeshSettings = true;
+
+    /// <summary>
+    /// パラメータを圧縮する
+    /// </summary>
+    public bool CompressionExpressionParameters = false;
 
     public LightingSettings LightingControl = new();
     public ColorControlSettings ColorControl = new();
