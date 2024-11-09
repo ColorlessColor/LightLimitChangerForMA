@@ -32,6 +32,8 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
     {
         var target = (Target)base.target;
         CategoryLabel($"{LightLimitChanger.Title} {LightLimitChanger.Version}");
+        EditorGUILayout.Space();
+        DrawLanguagePicker();
         DrawTabSelector();
 
         CategoryLabel(L10n.TrStr("category:preset"));
@@ -96,18 +98,6 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             }
         }
         
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField(L10n.TrStr("settings:other/language/label"), EditorStyles.boldLabel);
-        {
-            var position = EditorGUILayout.GetControlRect(true, L10n.Localization.GetDrawLanguagePickerHeight());
-            var p = position;
-            p.width = EditorGUIUtility.labelWidth;
-            EditorGUI.LabelField(p, L10n.Tr("Language"));
-            position.x += p.width + 4;
-            position.width -= p.width + 4;
-            L10n.Localization.DrawLanguagePicker(position);
-        }
-
         serializedObject.ApplyModifiedProperties();
     }
 
@@ -137,8 +127,6 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             };
         }
 
-        EditorGUILayout.Space();
-
         var tabs = TabContents;
         _ = tabs.Length;
         tabs[0].text = L10n.TrStr("category:mode/basic");
@@ -153,5 +141,16 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             ShowDescriptions = SelectedTab > Tab.AdvancedSettings;
         }
         EditorGUILayout.Space();
+    }
+
+    private static void DrawLanguagePicker()
+    {
+        var position = EditorGUILayout.GetControlRect(true, L10n.Localization.GetDrawLanguagePickerHeight());
+        var p = position;
+        p.width = EditorGUIUtility.labelWidth;
+        EditorGUI.LabelField(p, /*L10n.Tr("common:language")*/ "Language");
+        position.x += p.width + 4;
+        position.width -= p.width + 4;
+        L10n.Localization.DrawLanguagePicker(position);
     }
 }
