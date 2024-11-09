@@ -70,7 +70,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("Excludes"), true);
             if(ShowDescriptions)
             {
-                EditorGUILayout.HelpBox(L10n.TrStr("settings:other/excludes/description"), MessageType.Info);
+                EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/excludes/description"), MessageType.Info);
             }
 
             EditorGUILayout.Space();
@@ -78,7 +78,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("WriteDefaults"));
             if(ShowDescriptions)
             {
-                EditorGUILayout.HelpBox(L10n.TrStr("settings:other/writedefault/description"), MessageType.Info);
+                EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/writedefault/description"), MessageType.Info);
             }
 
             EditorGUILayout.Space();
@@ -86,7 +86,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("TargetShader"));
             if(ShowDescriptions)
             {
-                EditorGUILayout.HelpBox(L10n.TrStr("settings:other/target_shader/description"), MessageType.Info);
+                EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/target_shader/description"), MessageType.Info);
             }
 
             EditorGUILayout.Space();
@@ -94,7 +94,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             ParameterDrawer.PopupCheckbox(EditorGUILayout.GetControlRect(), serializedObject.FindProperty($"General.{nameof(GeneralSettings.CompressionExpressionParameters)}"), L10n.Tr("settings:other/compress-expression-parameters/label"));
             if (ShowDescriptions)
             {
-                EditorGUILayout.HelpBox(L10n.TrStr("settings:other/compress-expression-parameters/description"), MessageType.Info);
+                EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/compress-expression-parameters/description"), MessageType.Info);
             }
         }
         

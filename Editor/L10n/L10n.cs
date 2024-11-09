@@ -35,6 +35,8 @@ internal static class L10n
         {
             tempContent.text = text;
         }
+        tempContent.image = null;
+        tempContent.tooltip = null;
         return tempContent;
     }
 

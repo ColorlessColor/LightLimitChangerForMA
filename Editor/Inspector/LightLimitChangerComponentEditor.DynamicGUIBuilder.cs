@@ -103,9 +103,9 @@ partial class LightLimitChangerComponentEditor
                         il.If(() =>
                         {
                             il.Ldstr(StringExt.Create(sb, $"settings:{settingsInfo.Id}/{field.Name.ToKebabCase()}/description"));
-                            il.Call<Func<string, string>>(L10n.TrStr);
+                            il.Call<Func<string, GUIContent>>(L10n.Tr);
                             il.Int((int)MessageType.Info);
-                            il.Call<Action<string, MessageType>>(EditorGUILayout.HelpBox);
+                            il.Call(EditorGUILayoutUtils.HelpBox);
                         });
 
                         il.Ldarg(1);
