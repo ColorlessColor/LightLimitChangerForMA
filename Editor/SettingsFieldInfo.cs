@@ -1,23 +1,25 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace io.github.azukimochi;
 
-internal sealed class SettingsFieldInfo<TSettings> where TSettings : ISettings
+internal class SettingsFieldInfo
 {
-    public static SettingOptionsAttribute Options { get; }
+    private static Dictionary<Type, SettingsFieldInfo> infos = new();
+    public SettingOptionsAttribute Options { get; }
 
-    public static string Id { get; }
-    public static string DisplayName { get; }
-    public static string ParameterPrefix { get; }
+    public string Id { get; }
+    public string DisplayName { get; }
+    public string ParameterPrefix { get; }
 
-    static SettingsFieldInfo()
+    public SettingsFieldInfo(Type type)
     {
-        Options = typeof(TSettings).GetCustomAttribute<SettingOptionsAttribute>();
+        Options = type.GetCustomAttribute<SettingOptionsAttribute>();
         if (Options is null)
         {
-            Id = typeof(TSettings).FullName;
-            DisplayName = typeof(TSettings).Name;
-            ParameterPrefix = typeof(TSettings).Name;
+            Id = type.FullName;
+            DisplayName = type.Name;
+            ParameterPrefix = type.Name;
         }
         else
         {
@@ -25,5 +27,34 @@ internal sealed class SettingsFieldInfo<TSettings> where TSettings : ISettings
             DisplayName = Options.DisplayName;
             ParameterPrefix = Options.ParameterPrefix;
         }
+
+        infos.TryAdd(type, this);
+    }
+
+    public static SettingsFieldInfo GetInfo(Type type)
+    {
+        if (infos.TryGetValue(type, out var info))
+            return info;
+
+        info = new SettingsFieldInfo(type);
+        return info;
+    }
+}
+
+internal sealed class SettingsFieldInfo<TSettings> : SettingsFieldInfo where TSettings : ISettings
+{
+    private static SettingsFieldInfo Instance { get; }
+
+    public static new string Id => Instance.Id;
+    public static new string DisplayName => Instance.DisplayName;
+    public static new string ParameterPrefix => Instance.ParameterPrefix;
+
+    static SettingsFieldInfo()
+    {
+        Instance = GetInfo(typeof(TSettings));
+    }
+
+    private SettingsFieldInfo() : base(typeof(TSettings))
+    {
     }
 }

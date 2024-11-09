@@ -48,25 +48,25 @@ msgstr "プリセット"
 msgid "category:general-settings"
 msgstr "一般設定"
 
-msgid "category:lighting-settings"
+msgid "category:lighting"
 msgstr "ライティング設定"
 
-msgid "category:color-settings"
+msgid "category:color-control"
 msgstr "カラー設定"
 
 msgid "category:material-settings"
 msgstr "シェーダー設定"
 
-msgid "category:liltoon-settings"
+msgid "category:lilToon"
 msgstr "lilToon"
 
-msgid "category:poiyomi-settings"
+msgid "category:poiyomi"
 msgstr "Poiyomi"
 
-msgid "category:liltoon-distancefade-settings"
+msgid "category:liltoon-distancefade"
 msgstr "距離フェード"
 
-msgid "category:liltoon-backlight-settings"
+msgid "category:liltoon-backlight"
 msgstr "逆光ライト"
 
 msgid "category:sunao-settings"

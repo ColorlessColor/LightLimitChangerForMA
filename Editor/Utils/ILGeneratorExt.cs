@@ -19,10 +19,60 @@ internal static class ILGeneratorExt
         il.MarkLabel(label);
     }
 
+    public static void If(this ILGenerator il, Action @true, Action @false)
+    {
+        var label = il.DefineLabel();
+        var label2 = il.DefineLabel();
+        il.Emit(OpCodes.Brfalse_S, label);
+        @true();
+        il.Emit(OpCodes.Br, label2);
+        il.MarkLabel(label);
+        @false();
+        il.MarkLabel(label2);
+    }
+
     public static void GetProperty<T>(this ILGenerator il, string name)
     {
         var prop = ReflectionCache<T>.GetProperty(name);
         var method = prop.GetMethod;
+        if (method.IsStatic || (typeof(T).IsSealed && !method.IsVirtual))
+            il.Emit(OpCodes.Call, method);
+        else
+            il.Emit(OpCodes.Callvirt, method);
+    }
+
+    public static void GetProperty<T>(this ILGenerator il, Expression<Func<T>> selector)
+    {
+        var property = (selector.Body as MemberExpression).Member as PropertyInfo;
+        var method = property.GetMethod;
+        if (method.IsStatic || (typeof(T).IsSealed && !method.IsVirtual))
+            il.Emit(OpCodes.Call, method);
+        else
+            il.Emit(OpCodes.Callvirt, method);
+    }
+
+
+    public static void GetField<T>(this ILGenerator il, Expression<Func<T>> selector)
+    {
+        var field = (selector.Body as MemberExpression).Member as FieldInfo;
+        
+        il.Emit(field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, field);
+    }
+
+    public static void SetProperty<T>(this ILGenerator il, string name)
+    {
+        var prop = ReflectionCache<T>.GetProperty(name);
+        var method = prop.SetMethod;
+        if (method.IsStatic || (typeof(T).IsSealed && !method.IsVirtual))
+            il.Emit(OpCodes.Call, method);
+        else
+            il.Emit(OpCodes.Callvirt, method);
+    }
+
+    public static void SetProperty<T>(this ILGenerator il, Expression<Func<T>> selector)
+    {
+        var property = (selector.Body as MemberExpression).Member as PropertyInfo;
+        var method = property.SetMethod;
         if (method.IsStatic || (typeof(T).IsSealed && !method.IsVirtual))
             il.Emit(OpCodes.Call, method);
         else

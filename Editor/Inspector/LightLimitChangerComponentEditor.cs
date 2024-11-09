@@ -62,33 +62,15 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
         CategoryLabel(L10n.TrStr("category:general-settings"));
         EditorGUILayout.Space();
 
-        static void DoPropertyGUI<TSettings>(SerializedProperty property, string title) where TSettings: ISettings
-        {
-            using var scope = new ShurikenHeaderGroupScope(property, title);
-            try
-            {
-                if (!property.hasChildren)
-                    return;
-                var settings = (TSettings)property.boxedValue;
-                if (scope.IsOpened)
-                {
-                    OnGUI(settings, property);
-                }
-            }
-            catch(Exception e) { Debug.LogException(e); }
-        }
-
-        DoPropertyGUI<LightingSettings>(serializedObject.FindProperty("General.LightingControl"), L10n.TrStr("category:lighting-settings"));
-        DoPropertyGUI<ColorControlSettings>(serializedObject.FindProperty("General.ColorControl"), L10n.TrStr("category:color-settings"));
+        DoPropertyGUI<LightingSettings>(serializedObject.FindProperty("General.LightingControl"));
+        DoPropertyGUI<ColorControlSettings>(serializedObject.FindProperty("General.ColorControl"));
 
         CategoryLabel(L10n.TrStr("category:material-settings"));
         EditorGUILayout.Space();
 
-        DoPropertyGUI<LilToonSettings>(serializedObject.FindProperty("LilToon"), L10n.TrStr("category:liltoon-settings"));
-        DoPropertyGUI<LilDistanceFadeSettings>(serializedObject.FindProperty("LilToon.DistanceFade"), L10n.TrStr("category:liltoon-distancefade-settings"));
-        DoPropertyGUI<LilBacklightSettings>(serializedObject.FindProperty("LilToon.Backlight"), L10n.TrStr("category:liltoon-backlight-settings"));
-        DoPropertyGUI<PoiyomiSettings>(serializedObject.FindProperty("Poiyomi"), L10n.TrStr("category:poiyomi-settings"));
-        DoPropertyGUI<UnlitWFSettings>(serializedObject.FindProperty("UnlitWF"), L10n.TrStr("category:unlitwf-settings"));
+        DoPropertyGUI<LilToonSettings>(serializedObject.FindProperty("LilToon"));
+        DoPropertyGUI<PoiyomiSettings>(serializedObject.FindProperty("Poiyomi"));
+        DoPropertyGUI<UnlitWFSettings>(serializedObject.FindProperty("UnlitWF"));
 
         if (!PresetMode)
         {
