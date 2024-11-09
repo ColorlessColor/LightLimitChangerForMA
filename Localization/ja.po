@@ -232,6 +232,16 @@ msgstr ""
 #################
 ## lilToon 距離フェード
 
+msgid "settings:liltoon-distancefade/fadeColor/label"
+msgstr "色"
+
+msgid "settings:liltoon-distancefade/fadeColor/description"
+msgstr ""
+"距離フェードの色を調整するパラメーターです。\n\n"
+"初期でアニメーション制御は無効にしているため、必要に応じて有効にしてください。\n\n"
+"操作パラメーター\n"
+"lilToon:_DistanceFadeColor"
+
 msgid "settings:liltoon-distancefade/start/label"
 msgstr "開始距離"
 

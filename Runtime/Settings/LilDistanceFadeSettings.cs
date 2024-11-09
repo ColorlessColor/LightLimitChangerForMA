@@ -8,6 +8,12 @@ public class LilDistanceFadeSettings : ISettings
     /// <summary>
     /// 距離フェード
     /// </summary>
+    
+    [ShaderFeature(BuiltinSupportedShaders.LilToon)]
+    [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFadeColor")]
+    [MenuIcon(Icons.Color)]
+    public Parameter<Color> FadeColor = new (Color.black) {Enable = false, IsAnimated = false};
+    
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [VectorField(VectorField.X)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFade.x")]
@@ -27,7 +33,7 @@ public class LilDistanceFadeSettings : ISettings
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_DistanceFade.z")]
     [MenuIcon(Icons.DistanceFadeZ)]
     [Range(0, 1)]
-    public Parameter<float> Strength = new (1.0f) {Enable = false, IsAnimated = false};
+    public Parameter<float> Strength = new (0.0f) {Enable = false, IsAnimated = false};
     
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [VectorField(VectorField.W)]
