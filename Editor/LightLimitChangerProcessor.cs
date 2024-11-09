@@ -552,7 +552,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
         idle.writeDefaultValues = wd;
         idle.motion = blank;
 
-        var presetMenuRoot = menuRoot.GetOrAdd(L10n.TrStr("menu:preset"), menu => (VRCExMenuControlType.SubMenu, null));
+        var presetMenuRoot = menuRoot.GetOrAdd(L10n.TrStr("menu:preset"), menu => (VRCExMenuControlType.SubMenu, null), AssetUtils.FromGUID<Texture2D>(Icons.PresetFolder));
         foreach (var (child, i) in children.Select((x, i) => (x, i + 1)))
         {
             var menuName = i == 1 ? L10n.TrStr("menu:preset/default-preset", "Default") : child.name;
@@ -582,7 +582,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
             {
                 menu.automaticValue = true;
                 return (VRCExMenuControlType.Button, Preset, i);
-            });
+            }, AssetUtils.FromGUID<Texture2D>(Icons.Preset));
 
             void A<T>(T settings) where T : ISettings
             {
