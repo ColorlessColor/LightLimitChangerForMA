@@ -1,4 +1,6 @@
-﻿namespace io.github.azukimochi;
+﻿using System.Runtime.CompilerServices;
+
+namespace io.github.azukimochi;
 
 [CustomPropertyDrawer(typeof(Parameter<>), true)]
 internal sealed class ParameterDrawer : PropertyDrawer
@@ -81,6 +83,10 @@ internal sealed class ParameterDrawer : PropertyDrawer
                 if (valueProp.propertyType == SerializedPropertyType.Boolean)
                 {
                     PopupCheckbox(p, valueProp, GUIContent.none);
+                }
+                else if (valueProp.propertyType == SerializedPropertyType.Color)
+                {
+                    ColorField(p, valueProp, GUIContent.none);
                 }
                 else if (r is { } v)
                 {
@@ -216,6 +222,47 @@ internal sealed class ParameterDrawer : PropertyDrawer
         if (EditorGUI.EndChangeCheck())
         {
             property.boolValue = index != 0;
+        }
+    }
+
+    public static void ColorField(Rect position, SerializedProperty property, GUIContent label, bool hdr = true)
+    {
+        var color = property.colorValue;
+        var intensity = Mathf.Max(color.maxColorComponent, 1);
+
+        const float TextFieldWidth = 58;
+
+        var p = position with { width = position.width - TextFieldWidth - 4 } ;
+        var value = EditorGUI.ColorField(p, label, color, true, true, hdr);
+        var color2 = (value / intensity) with { a = value.a };
+        p.x += p.width + 4;
+
+        p.width = TextFieldWidth;
+        EditorGUI.BeginChangeCheck();
+        var hex = EditorGUI.DelayedTextField(p, GUIContent.none, GetColorCodeRGB(color2));
+        if (EditorGUI.EndChangeCheck() && ColorUtility.TryParseHtmlString(hex, out color2))
+        {
+            value = (color2 * intensity) with { a = value.a };
+        }
+
+        if (color != value)
+        {
+            property.colorValue = value;
+        }
+
+        static string GetColorCodeRGB(Color color)
+        {
+            var c = Unsafe.As<Color, System.Numerics.Vector3>(ref color);
+            if (c == new System.Numerics.Vector3(1,1,1))
+            {
+                return "#FFFFFF";
+            }
+            else if (c == new System.Numerics.Vector3(0, 0, 0))
+            {
+                return "#000000";
+            }
+
+            return $"#{ColorUtility.ToHtmlStringRGB(color)}";
         }
     }
 }
