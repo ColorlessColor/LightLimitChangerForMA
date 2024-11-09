@@ -2,7 +2,7 @@
 
 [Serializable]
 [MenuIcon(Icons.Light)]
-[SettingOptions(id: "lighting", displayName: "Lighting", parameterPrefix: "Light")]
+[SettingOptions(id: "lighting", menuPath: "Lighting", parameterPrefix: "Light")]
 public sealed class LightingSettings : ISettings
 {
     /// <summary>

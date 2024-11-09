@@ -2,7 +2,7 @@
 
 [Serializable]
 [MenuIcon(Icons.Color)]
-[SettingOptions(id: "color-control", displayName: "Color Control", parameterPrefix: "Color")]
+[SettingOptions(id: "color-control", menuPath: "Color Control", parameterPrefix: "Color")]
 public sealed class ColorControlSettings : ISettings
 {
     [GeneralControl(GeneralControlType.ColorControlHue)]

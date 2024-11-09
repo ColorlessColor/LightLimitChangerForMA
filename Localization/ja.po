@@ -81,10 +81,10 @@ msgstr "その他の設定"
 #################
 ## ライティング設定
 
-msgid "settings:lighting/minLight/label"
+msgid "settings:lighting/min-light/label"
 msgstr "明るさの下限"
 
-msgid "settings:lighting/minLight/description"
+msgid "settings:lighting/min-light/description"
 msgstr ""
 "この値を変更すると、アバターの明るさの下限値が変わります。\n\n"
 "初期値はアバターリセットなどで初期化されるときの値です。\n"
@@ -95,10 +95,10 @@ msgstr ""
 "sunao:*****\n"
 "UnlitWF:*****"
 
-msgid "settings:lighting/maxLight/label"
+msgid "settings:lighting/max-light/label"
 msgstr "明るさの上限"
 
-msgid "settings:lighting/maxLight/description"
+msgid "settings:lighting/max-light/description"
 msgstr ""
 "この値を変更すると、アバターの明るさの上限値が変わります。\n\n"
 "初期値はアバターリセットなどで初期化されるときの値です。\n"
@@ -137,10 +137,10 @@ msgstr ""
 "sunao:*****\n"
 "UnlitWF:*****"
 
-msgid "settings:lighting/emissionStrength/label"
+msgid "settings:lighting/emission-strength/label"
 msgstr "エミッション機能"
 
-msgid "settings:lighting/emissionStrength/description"
+msgid "settings:lighting/emission-strength/description"
 msgstr ""
 "エミッションは、アバターのエミッションの強さを調整するパラメーターです。\n"
 "この機能を使うことで、エミッションによって暗いところで光りすぎてしまったり、PostProcessによって白飛びしてしまうのを防ぐことができます。\n\n"
@@ -209,20 +209,20 @@ msgstr ""
 #################
 ## lilToon設定
 
-msgid "settings:lilToon/shadowEnvStrength/label"
+msgid "settings:lilToon/shadow-env-strength/label"
 msgstr "影環境強度"
 
-msgid "settings:lilToon/shadowEnvStrength/description"
+msgid "settings:lilToon/shadow-env-strength/description"
 msgstr ""
 "影環境強度は、影の環境強度を調整するパラメーターです。\n\n"
 "初期値はアバターリセットなどで初期化されるときの値です。\n\n"
 "操作パラメーター\n"
 "lilToon:_ShadowEnvStrength"
 
-msgid "settings:lilToon/vertexLightStrength/label"
+msgid "settings:lilToon/vertex-light-strength/label"
 msgstr "頂点ライト強度"
 
-msgid "settings:lilToon/vertexLightStrength/description"
+msgid "settings:lilToon/vertex-light-strength/description"
 msgstr ""
 "頂点ライト強度は、頂点ライトの強度を調整するパラメーターです。\n\n"
 "初期値はアバターリセットなどで初期化されるときの値です。\n\n"
@@ -232,10 +232,10 @@ msgstr ""
 #################
 ## lilToon 距離フェード
 
-msgid "settings:liltoon-distancefade/fadeColor/label"
+msgid "settings:liltoon-distancefade/fade-color/label"
 msgstr "色"
 
-msgid "settings:liltoon-distancefade/fadeColor/description"
+msgid "settings:liltoon-distancefade/fade-color/description"
 msgstr ""
 "距離フェードの色を調整するパラメーターです。\n\n"
 "初期でアニメーション制御は無効にしているため、必要に応じて有効にしてください。\n\n"
@@ -272,10 +272,10 @@ msgstr ""
 "操作パラメーター\n"
 "lilToon:_DistanceFade.z"
 
-msgid "settings:liltoon-distancefade/backfaceForceShadow/label"
+msgid "settings:liltoon-distancefade/backface-force-shadow/label"
 msgstr "裏面を影にする"
 
-msgid "settings:liltoon-distancefade/backfaceForceShadow/description"
+msgid "settings:liltoon-distancefade/backface-force-shadow/description"
 msgstr ""
 "裏面を影にするは、裏面を影にするかどうかを調整するパラメーターです。\n\n"
 "初期でアニメーション制御は無効にしているため、必要に応じて有効にしてください。\n\n"
@@ -285,67 +285,67 @@ msgstr ""
 #################
 ## lilToon 逆光ライト
 
-msgid "settings:liltoon-backlight/useBacklight/label"
+msgid "settings:liltoon-backlight/use-backlight/label"
 msgstr "逆光ライトを使用する"
 
-msgid "settings:liltoon-backlight/useBacklight/description"
+msgid "settings:liltoon-backlight/use-backlight/description"
 msgstr ""
 "有効にすることで、逆光ライトを使用するかどうかを制御することができます。\n"
 
-msgid "settings:liltoon-backlight/backlightColor/label"
+msgid "settings:liltoon-backlight/backlight-color/label"
 msgstr "逆光ライトの色"
 
-msgid "settings:liltoon-backlight/backlightColor/description"
+msgid "settings:liltoon-backlight/backlight-color/description"
 msgstr ""
 "逆光ライトの色は、逆光ライトの色を調整するパラメーターです。\n"
 "逆光ライトを使用する場合には、逆光ライトの色を調整することができます。\n\n"
 "操作パラメーター\n"
 "lilToon:_BacklightColor"
 
-msgid "settings:liltoon-backlight/backlightMainStrength/label"
+msgid "settings:liltoon-backlight/backlight-main-strength/label"
 msgstr "メインカラーの強度"
 
-msgid "settings:liltoon-backlight/backlightMainStrength/description"
+msgid "settings:liltoon-backlight/backlight-main-strength/description"
 msgstr ""
 "メインカラーの強度は、逆光ライトのメインカラーの強度を調整するパラメーターです。\n"
 "逆光ライトを使用する場合には、逆光ライトのメインカラーの強度を調整することができます。\n\n"
 "操作パラメーター\n"
 "lilToon:_BacklightMainStrength"
 
-msgid "settings:liltoon-backlight/backlightBorder/label"
+msgid "settings:liltoon-backlight/backlight-border/label"
 msgstr "範囲"
 
-msgid "settings:liltoon-backlight/backlightBorder/description"
+msgid "settings:liltoon-backlight/backlight-border/description"
 msgstr ""
 "範囲は、逆光ライトの範囲を調整するパラメーターです。\n"
 "逆光ライトを使用する場合には、逆光ライトの範囲を調整することができます。\n\n"
 "操作パラメーター\n"
 "lilToon:_BacklightBorder"
 
-msgid "settings:liltoon-backlight/backlightBlur/label"
+msgid "settings:liltoon-backlight/backlight-blur/label"
 msgstr "ぼかし"
 
-msgid "settings:liltoon-backlight/backlightBlur/description"
+msgid "settings:liltoon-backlight/backlight-blur/description"
 msgstr ""
 "ぼかしは、逆光ライトのぼかしを調整するパラメーターです。\n"
 "逆光ライトを使用する場合には、逆光ライトのぼかしを調整することができます。\n\n"
 "操作パラメーター\n"
 "lilToon:_BacklightBlur"
 
-msgid "settings:liltoon-backlight/backlightDirectivity/label"
+msgid "settings:liltoon-backlight/backlight-directivity/label"
 msgstr "指向性"
 
-msgid "settings:liltoon-backlight/backlightDirectivity/description"
+msgid "settings:liltoon-backlight/backlight-directivity/description"
 msgstr ""
 "指向性は、逆光ライトの指向性を調整するパラメーターです。\n"
 "逆光ライトを使用する場合には、逆光ライトの指向性を調整することができます。\n\n"
 "操作パラメーター\n"
 "lilToon:_BacklightDirectivity"
 
-msgid "settings:liltoon-backlight/backlightViewStrength/label"
+msgid "settings:liltoon-backlight/backlight-view-strength/label"
 msgstr "視線方向の影響度"
 
-msgid "settings:liltoon-backlight/backlightViewStrength/description"
+msgid "settings:liltoon-backlight/backlight-view-strength/description"
 msgstr ""
 "視線方向の影響度は、逆光ライトの視線方向の影響度を調整するパラメーターです。\n"
 "逆光ライトを使用する場合には、逆光ライトの視線方向の影響度を調整することができます。\n\n"

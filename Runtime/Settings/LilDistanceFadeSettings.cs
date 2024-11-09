@@ -2,7 +2,7 @@ namespace io.github.azukimochi;
 
 [Serializable]
 [MenuIcon(Icons.DistanceFade)]
-[SettingOptions(id: "liltoon-distancefade", displayName: "DistanceFade", parameterPrefix: "LilToonDistanceFade")]
+[SettingOptions(id: "liltoon-distancefade", menuPath: "lilToon/DistanceFade", parameterPrefix: "LilToonDistanceFade")]
 public class LilDistanceFadeSettings : ISettings
 {
     /// <summary>

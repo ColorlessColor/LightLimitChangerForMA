@@ -47,4 +47,28 @@ internal static class StringExt
     {
         return handler.ToStringAndClear();
     }
+
+    public static string ToKebabCase(this string str)
+    {
+        static char ToLower(char c) => (char)(c | 0x20);
+        static bool IsUpper(char c) => (c & 0x20) == 0;
+
+        if (str is null)
+            return null;
+        if (str.Length == 0)
+            return str;
+
+        StringBuilder sb = new();
+        sb.Append(ToLower(str[0]));
+
+        foreach(var x in str.AsSpan(1))
+        {
+            if (IsUpper(x))
+            {
+                sb.Append("-");
+            }
+            sb.Append(ToLower(x));
+        }
+        return sb.ToString();
+    }
 }

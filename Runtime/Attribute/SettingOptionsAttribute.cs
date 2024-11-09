@@ -3,10 +3,10 @@
 [AttributeUsage(AttributeTargets.Class)]
 internal sealed class SettingOptionsAttribute : Attribute
 {
-    public SettingOptionsAttribute(string id, string displayName, string parameterPrefix = null)
+    public SettingOptionsAttribute(string id, string menuPath, string parameterPrefix = null)
     {
         Id = id;
-        DisplayName = displayName;
+        MenuPath = menuPath;
         ParameterPrefix = parameterPrefix;
     }
 
@@ -16,9 +16,9 @@ internal sealed class SettingOptionsAttribute : Attribute
     public string Id { get; }
 
     /// <summary>
-    /// メニューの表示名
+    /// メニューのパス
     /// </summary>
-    public string DisplayName { get; }
+    public string MenuPath { get; }
 
     /// <summary>
     /// パラメーター名の接頭辞

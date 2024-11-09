@@ -91,7 +91,7 @@ partial class LightLimitChangerComponentEditor
                         il.Ldarg(1);
                         il.Ldstr(field.Name);
                         il.Call<SerializedProperty, Func<string, SerializedProperty>>(x => x.FindPropertyRelative);
-                        il.Ldstr(StringExt.Create(sb, $"settings:{settingsInfo.Id}/{char.ToLowerInvariant(field.Name[0])}{field.Name.AsSpan(1)}/label"));
+                        il.Ldstr($"settings:{settingsInfo.Id}/{field.Name.ToKebabCase()}/label");
                         il.Call<Func<string, GUIContent>>(L10n.Tr);
                         il.Int(info.DisableInitialValueSliderAttribute is null ? 1 : 0);
                         il.Ldloc(local_range);
@@ -102,7 +102,7 @@ partial class LightLimitChangerComponentEditor
                         il.Ldloc(local_getShowDescription);
                         il.If(() =>
                         {
-                            il.Ldstr(StringExt.Create(sb, $"settings:{settingsInfo.Id}/{char.ToLowerInvariant(field.Name[0])}{field.Name.AsSpan(1)}/description"));
+                            il.Ldstr(StringExt.Create(sb, $"settings:{field.Name.ToKebabCase()}/description"));
                             il.Call<Func<string, string>>(L10n.TrStr);
                             il.Int((int)MessageType.Info);
                             il.Call<Action<string, MessageType>>(EditorGUILayout.HelpBox);

@@ -5,11 +5,11 @@ namespace io.github.azukimochi;
 
 internal class SettingsFieldInfo
 {
-    private static Dictionary<Type, SettingsFieldInfo> infos = new();
+    private static readonly Dictionary<Type, SettingsFieldInfo> infos = new();
     public SettingOptionsAttribute Options { get; }
 
     public string Id { get; }
-    public string DisplayName { get; }
+    public string MenuPath { get; }
     public string ParameterPrefix { get; }
 
     public SettingsFieldInfo(Type type)
@@ -18,13 +18,13 @@ internal class SettingsFieldInfo
         if (Options is null)
         {
             Id = type.FullName;
-            DisplayName = type.Name;
+            MenuPath = type.Name;
             ParameterPrefix = type.Name;
         }
         else
         {
             Id = Options.Id;
-            DisplayName = Options.DisplayName;
+            MenuPath = Options.MenuPath;
             ParameterPrefix = Options.ParameterPrefix;
         }
 
@@ -46,7 +46,7 @@ internal sealed class SettingsFieldInfo<TSettings> : SettingsFieldInfo where TSe
     private static SettingsFieldInfo Instance { get; }
 
     public static new string Id => Instance.Id;
-    public static new string DisplayName => Instance.DisplayName;
+    public static new string MenuPath => Instance.MenuPath;
     public static new string ParameterPrefix => Instance.ParameterPrefix;
 
     static SettingsFieldInfo()

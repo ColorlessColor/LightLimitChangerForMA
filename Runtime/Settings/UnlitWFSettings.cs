@@ -2,7 +2,7 @@
 
 [Serializable]
 [MenuIcon(Icons.UnlitWF)]
-[SettingOptions(id: "unlitwf", displayName: "UnlitWF", parameterPrefix: "UnlitWF")]
+[SettingOptions(id: "unlitwf", menuPath: "UnlitWF", parameterPrefix: "UnlitWF")]
 public sealed class UnlitWFSettings : ISettings
 {
 }

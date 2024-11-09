@@ -4,7 +4,7 @@ namespace io.github.azukimochi;
 
 [Serializable]
 [MenuIcon(Icons.LilToon)]
-[SettingOptions(id: "lilToon", displayName: "LilToon", parameterPrefix: "LilToon")]
+[SettingOptions(id: "lilToon", menuPath: "LilToon", parameterPrefix: "LilToon")]
 public sealed class LilToonSettings : ISettings
 {
     /// <summary>

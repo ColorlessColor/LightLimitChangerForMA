@@ -2,7 +2,7 @@ namespace io.github.azukimochi;
 
 [Serializable]
 [MenuIcon(Icons.Backlight)]
-[SettingOptions(id: "liltoon-backlight", displayName: "Backlight", parameterPrefix: "LilToonBacklight")]
+[SettingOptions(id: "liltoon-backlight", menuPath: "lilToon/Backlight", parameterPrefix: "LilToonBacklight")]
 public class LilBacklightSettings : ISettings
 {
     // _BacklightColor  背面光の色

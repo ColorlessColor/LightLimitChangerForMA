@@ -180,7 +180,8 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
     private void ConfigureSettings<TSettings>(TSettings settings) where TSettings : ISettings, new()
     {
-        var menuGroup = menuRoot.GetOrAdd(SettingsFieldInfo<TSettings>.DisplayName);
+        var menuGroup = menuRoot.GetOrAdd(SettingsFieldInfo<TSettings>.MenuPath);
+        menuGroup.name = L10n.TrStr($"category:{SettingsFieldInfo<TSettings>.Id}");
         if (typeof(TSettings).GetCustomAttribute<MenuIconAttribute>() is { } groupIconAttr)
         {
             menuGroup.Control.icon = AssetUtils.FromGUID<Texture2D>(groupIconAttr.Guid);
@@ -316,7 +317,12 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
                                 processor.ConfigureShaderSpecificAnimation(context);
                             }
-                            var menuPath = $"{parameterInfo.Name}{(values.Length == 1 ? "" : $"/{(char)(postfix[1] & ~0x20)}")}";
+                            string menuPath = L10n.TrStr($"settings:{SettingsFieldInfo<TSettings>.Id}/{parameterInfo.FieldInfo.Name.ToKebabCase()}/label");
+                            if (values.Length != 1)
+                            {
+                                menuPath += $"/{(char)(postfix[1] & ~0x20)}";
+                            }
+                            //menuPath = $"{parameterInfo.Name}{(values.Length == 1 ? "" : $"/{(char)(postfix[1] & ~0x20)}")}";
                             var menuItem = menuGroup.GetOrAdd(menuPath, (MAMenuItem menu) =>
                             {
                                 if (parameterInfo.ParameterType == typeof(bool))
