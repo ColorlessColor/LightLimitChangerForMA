@@ -33,13 +33,13 @@ msgstr "有効"
 ##################
 ## 設定カテゴリーのラベル
 
-msgid "category:basicsettings"
+msgid "category:mode/basic"
 msgstr "基本設定"
 
-msgid "category:advancedsettings"
+msgid "category:mode/advanced"
 msgstr "詳細設定"
 
-msgid "category:discriptionmode"
+msgid "category:mode/description"
 msgstr "解説モード"
 
 msgid "category:preset"

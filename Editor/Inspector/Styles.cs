@@ -17,11 +17,6 @@ internal static class Styles
         return style;
     }, false);
 
-    public static readonly GUIStyle TabButtonStyle = "LargeButton";
-
-    // GUI.ToolbarButtonSize.FitToContentsも設定できる
-    public static readonly GUI.ToolbarButtonSize TabButtonSize = GUI.ToolbarButtonSize.Fixed;
-
     public static readonly Lazy<GUIStyle> ShurikenTitle = new(() => new GUIStyle("ShurikenModuleTitle")
     {
         font = EditorStyles.label.font,

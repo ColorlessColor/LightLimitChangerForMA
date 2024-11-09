@@ -32,20 +32,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
     {
         var target = (Target)base.target;
         CategoryLabel($"{LightLimitChanger.Title} {LightLimitChanger.Version}");
-
-        using (new EditorGUILayout.HorizontalScope()) {
-            GUILayout.FlexibleSpace();
-            // タブを描画する
-            EditorGUI.BeginChangeCheck();
-            SelectedTab = (Tab)GUILayout.Toolbar((int)SelectedTab, Styles.TabToggles.Value, Styles.TabButtonStyle, Styles.TabButtonSize);
-            if (EditorGUI.EndChangeCheck())
-            {
-                IsAdvancedMode = SelectedTab >= Tab.AdvancedSettings;
-                ShowDescriptions = SelectedTab > Tab.AdvancedSettings;
-            }
-            GUILayout.FlexibleSpace();
-        }
-        EditorGUILayout.Space();
+        DrawTabSelector();
 
         CategoryLabel(L10n.TrStr("category:preset"));
         EditorGUILayout.Space();
@@ -135,5 +122,36 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
         position.width -= 4;
         position.x += 2;
         EditorGUI.DrawRect(position, Color.gray with { a = 0.25f });
+    }
+
+    private static GUIStyle TabButtonStyle;
+    private static readonly GUIContent[] TabContents = new GUIContent[] { new(), new(), new() };
+
+    private static void DrawTabSelector()
+    {
+        if (TabButtonStyle == null)
+        {
+            TabButtonStyle = new(GUI.skin.button)
+            {
+                fixedHeight = EditorGUIUtility.singleLineHeight * 1.25f
+            };
+        }
+
+        EditorGUILayout.Space();
+
+        var tabs = TabContents;
+        _ = tabs.Length;
+        tabs[0].text = L10n.TrStr("category:mode/basic");
+        tabs[1].text = L10n.TrStr("category:mode/advanced");
+        tabs[2].text = L10n.TrStr("category:mode/description");
+
+        EditorGUI.BeginChangeCheck();
+        SelectedTab = (Tab)GUILayout.Toolbar((int)SelectedTab, tabs, TabButtonStyle);
+        if (EditorGUI.EndChangeCheck())
+        {
+            IsAdvancedMode = SelectedTab >= Tab.AdvancedSettings;
+            ShowDescriptions = SelectedTab > Tab.AdvancedSettings;
+        }
+        EditorGUILayout.Space();
     }
 }
