@@ -1,4 +1,4 @@
-namespace io.github.azukimochi;
+﻿namespace io.github.azukimochi;
 
 [CustomPropertyDrawer(typeof(Parameter<>), true)]
 internal sealed class ParameterDrawer : PropertyDrawer
@@ -35,78 +35,6 @@ internal sealed class ParameterDrawer : PropertyDrawer
         var position = EditorGUILayout.GetControlRect(label != null, GetPropertyHeight(property, advancedMode, minMaxRange.HasValue));
         Draw(position, property, label, showInitialSlider, range, minMaxRange, advancedMode);
     }
-
-    public static void Draw(Rect position, SerializedProperty property, GUIContent label, Vector2? range = null, bool isOverrideValue = false)
-    {
-        using var scope = new PropertyScope(position, label, property);
-        var valueProp = property.FindPropertyRelative("Value");
-        //var rangeProp = property.FindPropertyRelative("Range");
-        var enableProp = property.FindPropertyRelative("Enable");
-        var isAnimatedProp = property.FindPropertyRelative("IsAnimated");
-        var savedProp = property.FindPropertyRelative("Saved");
-        var syncedProp = property.FindPropertyRelative("Synced");
-        position.height = EditorGUIUtility.singleLineHeight;
-
-        var p = position;
-        p.width = EditorGUIUtility.labelWidth;
-        bool enable;
-
-        if (LightLimitChangerComponentEditor.SelectedTab == LightLimitChangerComponentEditor.Tab.BasicSettings)
-        {
-            enable = EditorGUI.ToggleLeft(p, scope.Label, enableProp.boolValue);
-            enableProp.boolValue = enable;
-        }
-        else
-        {
-            p.x += FoldoutStyleSize.Value.x;
-            property.isExpanded = EditorGUI.Foldout(p, property.isExpanded, scope.Label);
-            enable = enableProp.boolValue;
-        }
-
-        //if (LightLimitChangerComponentEditor.SelectedTab != LightLimitChangerComponentEditor.Tab.BasicSettings)
-        //{
-        //    property.isExpanded = EditorGUI.Foldout(position with { width = EditorGUIUtility.labelWidth }, property.isExpanded, GUIContent.none, true);
-        //}
-        p = position;
-        p.x += EditorGUIUtility.labelWidth - EditorGUI.indentLevel * 15;
-        p.width -= EditorGUIUtility.labelWidth - EditorGUI.indentLevel * 15;
-        
-        
-        p = position;
-        p.x += EditorGUIUtility.labelWidth - EditorGUI.indentLevel * 15;
-        p.width -= EditorGUIUtility.labelWidth - EditorGUI.indentLevel * 15;
-
-        EditorGUI.BeginDisabledGroup(!enable);
-        if (range is { /* Not Null */ } r)
-        {
-            EditorGUI.BeginChangeCheck();
-            var value = EditorGUI.Slider(p, GUIContent.none, valueProp.floatValue, r.x, r.y);
-            if (EditorGUI.EndChangeCheck())
-            {
-                valueProp.floatValue = value;
-            }
-        }
-        else
-        {
-            EditorGUI.PropertyField(p, valueProp, GUIContent.none);
-        }
-        EditorGUI.EndDisabledGroup();
-
-        if (!property.isExpanded || LightLimitChangerComponentEditor.SelectedTab == LightLimitChangerComponentEditor.Tab.BasicSettings)
-            return;
-
-        
-        position.y += EditorGUIUtility.singleLineHeight;
-        position.x += EditorGUIUtility.labelWidth;
-        position.width -= EditorGUIUtility.labelWidth;
-
-        p = position with { width = position.width / 4 };
-        DrawEnableButton(ref p, enableProp);
-        DrawEnableButton(ref p, isAnimatedProp);
-        DrawEnableButton(ref p, savedProp);
-        DrawEnableButton(ref p, syncedProp);
-    }
-
 
     public static void Draw(Rect position, SerializedProperty property, GUIContent label, bool showInitialSlider = true, Vector2? range = null, Vector2? minMaxRange = null, bool advancedMode = false)
     {
