@@ -56,7 +56,7 @@ internal class ParameterFieldInfo
 internal sealed class ParameterInfo : ParameterFieldInfo
 {
     public Parameter Parameter { get; }
-    public Vector2 Range { get; }
+    public Ranges Range { get; }
     public ImmutableDictionary<string, string> MaterialProperties { get; }
 
     public ParameterInfo(ISettings settings, FieldInfo fieldInfo) : base(fieldInfo)
@@ -64,14 +64,27 @@ internal sealed class ParameterInfo : ParameterFieldInfo
         this.Parameter = fieldInfo.GetValue(settings) as Parameter;
         MaterialProperties = fieldInfo.GetCustomAttributes<MaterialPropertyNameAttribute>(false).ToImmutableDictionary(x => x.Shader, x => x.Name);
 
-        Vector2 range = Vector2.up;
+        Ranges range = Vector2.up;
         if (MinMaxRangeAttribute is { } minMaxRange)
         {
             range = Parameter.MinMaxRange;
         }
         else if (RangeAttribute is { } rangeAttr)
         {
-            range = new(rangeAttr.Min, rangeAttr.Max);
+            range = new(new Vector2(rangeAttr.Min, rangeAttr.Max));
+        }
+        
+        if (ParameterType == typeof(Color))
+        {
+            var value = (Parameter as Parameter<Color>).Value;
+            var span = (stackalloc Vector2[4]);
+            var max = Mathf.Max(range[0].y, value.r, value.g, value.b);
+            for (int i = 0; i < 3; i++)
+            {
+                span[i] = new(range[0].x, max);
+            }
+            span[3] = Vector2.up;
+            range = new(span);
         }
         Range = range;
     }

@@ -273,7 +273,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                         var avatarParameter = new ParameterConfig()
                         {
                             nameOrPrefix = $"{SettingsFieldInfo<TSettings>.ParameterPrefix}{name}",
-                            defaultValue = Utils.NormalizeInRange(value, parameterInfo.Range.x, parameterInfo.Range.y),
+                            defaultValue = Utils.NormalizeInRange(value, parameterInfo.Range[i].x, parameterInfo.Range[i].y),
                             syncType =
                             t == typeof(bool) ? ParameterSyncType.Bool :
                             t == typeof(int) ? ParameterSyncType.Int :
@@ -297,7 +297,7 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
                         foreach (var processor in processors.AsSpan())
                         {
-                            context.Range = parameterInfo.Range; // Range is mutable
+                            context.Range = parameterInfo.Range[i]; // Range is mutable
 
                             var propertyName = parameterInfo.GetPropertyName(processor);
                             if (string.IsNullOrEmpty(propertyName))
@@ -590,10 +590,9 @@ internal sealed class LightLimitChangerProcessor : IDisposable
                 foreach (var parameterInfo in settings.AllParameterFields().Select(x => new ParameterInfo(settings, x)))
                 {
                     ReadOnlySpan<float> values = parameterBuffer[..parameterInfo.Parameter.GetValues(parameterBuffer)];
-
                     for (int i = 0; i < values.Length; i++)
                     {
-                        var value = Utils.NormalizeInRange(values[i], parameterInfo.Range.x, parameterInfo.Range.y);
+                        var value = Utils.NormalizeInRange(values[i], parameterInfo.Range[i].x, parameterInfo.Range[i].y);
                         string postfix = values.Length == 1 ? "" : parameterInfo.ParameterType == typeof(Vector4) ? $".{"xyzw"[i]}" : $".{"rgba"[i]}";
                         var name = $"{SettingsFieldInfo<T>.ParameterPrefix}{parameterInfo.Name}{postfix}";
                         if (parameters.Any(x => x.name == name))
