@@ -13,8 +13,11 @@ partial class LightLimitChangerComponentEditor
             return;
         var settings = (TSettings)property.boxedValue;
         using var scope = new ShurikenHeaderGroupScope(property, L10n.TrStr($"category:{SettingsFieldInfo<TSettings>.Id}"));
-        if (scope.IsOpened)
+        if (scope.IsOpened) {
+            if (ShowDescriptions)
+                EditorGUILayoutUtils.HelpBox(L10n.Tr($"category:{SettingsFieldInfo<TSettings>.Id}/description"), MessageType.Info);
             DynamicGUIBuilder<TSettings>.OnGUI(settings, property);
+        }
     }
 
     internal static class DynamicGUIBuilder<TSettings> where TSettings : ISettings

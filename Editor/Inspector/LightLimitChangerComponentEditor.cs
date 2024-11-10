@@ -50,7 +50,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
         EditorGUILayout.Space();
         CategoryLabel(L10n.TrStr("category:general-settings"));
         EditorGUILayout.Space();
-
+        
         DoPropertyGUI<LightingSettings>(serializedObject.FindProperty("General.LightingControl"));
         DoPropertyGUI<ColorControlSettings>(serializedObject.FindProperty("General.ColorControl"));
 
