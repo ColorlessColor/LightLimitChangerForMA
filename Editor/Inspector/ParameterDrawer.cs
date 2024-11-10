@@ -123,6 +123,7 @@ internal sealed class ParameterDrawer : PropertyDrawer
 
             p.x += EditorGUIUtility.labelWidth;
             p.width -= EditorGUIUtility.labelWidth;
+            DrawPrefixLabel(p, L10n.Tr("common:label/option"));
 
             p = p with { width = p.width / 4 };
             EditorGUI.EndDisabledGroup();
@@ -132,7 +133,6 @@ internal sealed class ParameterDrawer : PropertyDrawer
             DrawEnableButton(ref p, savedProp, L10n.TrStr("common:label/saved"));
             DrawEnableButton(ref p, syncedProp, L10n.TrStr("common:label/synced"));
 
-            DrawPrefixLabel(p, L10n.Tr("common:label/option"));
 
         }
         finally
