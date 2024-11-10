@@ -107,7 +107,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
     }
 
 
-    private static void CategoryLabel(string title) => EditorGUILayout.LabelField(title, Styles.CategoryLabel.Value);
+    internal static void CategoryLabel(string title) => EditorGUILayout.LabelField(title, Styles.CategoryLabel.Value);
 
     private static void DrawSeparator()
     {
@@ -119,19 +119,12 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
         EditorGUI.DrawRect(position, Color.gray with { a = 0.25f });
     }
 
-    private static GUIStyle TabButtonStyle;
+    internal static GUIStyle TabButtonStyle => _largeButtonStyle ??= new(GUI.skin.button) { fixedHeight = EditorGUIUtility.singleLineHeight * 1.25f };
+    private static GUIStyle _largeButtonStyle;
     private static readonly GUIContent[] TabContents = new GUIContent[] { new(), new(), new() };
 
     private static void DrawTabSelector()
     {
-        if (TabButtonStyle == null)
-        {
-            TabButtonStyle = new(GUI.skin.button)
-            {
-                fixedHeight = EditorGUIUtility.singleLineHeight * 1.25f
-            };
-        }
-
         var tabs = TabContents;
         _ = tabs.Length;
         tabs[0].text = L10n.TrStr("category:mode/basic");
