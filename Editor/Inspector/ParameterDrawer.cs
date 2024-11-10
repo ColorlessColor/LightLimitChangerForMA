@@ -132,8 +132,6 @@ internal sealed class ParameterDrawer : PropertyDrawer
             DrawEnableButton(ref p, isAnimatedProp, L10n.TrStr("common:label/animation"));
             DrawEnableButton(ref p, savedProp, L10n.TrStr("common:label/saved"));
             DrawEnableButton(ref p, syncedProp, L10n.TrStr("common:label/synced"));
-
-
         }
         finally
         {
