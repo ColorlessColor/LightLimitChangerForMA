@@ -441,3 +441,18 @@ msgstr ""
 "このコンポーネントは旧式のため、Light Limit Changer Ver.2以降とは互換性がありません。\n"
 "\n"
 "下の「マイグレーションする」ボタンを押すことで、Ver.2用のコンポーネントへ設定された値をある程度保持しつつ、マイグレーション（移行）することができます。"
+
+
+#################
+## エラーメッセージ
+
+msgid "error:found-old-version/title"
+msgstr "アバター内に旧式のLight Limit Changerコンポーネントが見つかりました"
+
+msgid "error:found-old-version/details"
+msgstr ""
+"旧式のコンポーネントでは実行時にアニメーション等が生成されません。\n"
+
+msgid "error:found-old-version/hint"
+msgstr ""
+"旧式のコンポーネントを除去してLight Limit Changerを再導入するか、またはインスペクタで旧式のコンポーネントを最新版へ移行することが可能です。"

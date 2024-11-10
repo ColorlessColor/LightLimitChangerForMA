@@ -56,6 +56,13 @@ namespace io.github.azukimochi
             ConfigureBuiltinProcessors(processor);
 
             processor.Run();
+
+            if (processor.Component == null && context.AvatarRootObject.GetComponentInChildren<LightLimitChangerSettings>() is { } oldComponent)
+            {
+                var error = NdmfMessage.Create(ErrorSeverity.NonFatal, "error:found-old-version");
+                error.AddReference(ObjectRegistry.GetReference(oldComponent));
+                ErrorReport.ReportError(error);
+            }
         }
 
         private void ConfigureBuiltinProcessors(LightLimitChangerProcessor processor)

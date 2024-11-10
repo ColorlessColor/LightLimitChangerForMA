@@ -17,7 +17,7 @@ internal sealed class PoiyomiProcessor : ShaderProcessor
         if (shaderName.Contains("7.3"))
         {
             // 古くてパラメーターが違うのでサポートしない、したくない；
-            NdmfMessage.Throw("error/poiyomi/old-version");
+            //NdmfMessage.Throw("error/poiyomi/old-version");
             return false; 
         }
 
