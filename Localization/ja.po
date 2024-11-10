@@ -34,6 +34,21 @@ msgid "common:label/true"
 msgstr "有効"
 
 ##################
+## リンクのラベル
+
+msgid "link:description"
+msgstr "各種リンク"
+
+msgid "link:changelog"
+msgstr "更新履歴(X:Twitter)"
+
+msgid "link:documentation"
+msgstr "ドキュメント"
+
+msgid "link:feedback"
+msgstr "フィードバック(Google Form)"
+
+##################
 ## 設定カテゴリーのラベル
 
 msgid "category:mode/basic"

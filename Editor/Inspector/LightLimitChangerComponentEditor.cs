@@ -6,24 +6,35 @@ namespace io.github.azukimochi;
 internal sealed partial class LightLimitChangerComponentEditor : Editor
 {
     private static Texture2D linearGrayTexture;
+
     internal enum Tab
     {
         BasicSettings,
         AdvancedSettings,
         DiescriptionMode,
     }
-    
+
     public static Tab SelectedTab = Tab.BasicSettings;
 
-    public static bool IsAdvancedMode { get => Preferences.Local.AdvancedMode; set => Preferences.Local.AdvancedMode = value; }
+    public static bool IsAdvancedMode
+    {
+        get => Preferences.Local.AdvancedMode;
+        set => Preferences.Local.AdvancedMode = value;
+    }
 
-    public static bool ShowDescriptions { get => Preferences.Local.ShowDescription; set => Preferences.Local.ShowDescription = value; }
+    public static bool ShowDescriptions
+    {
+        get => Preferences.Local.ShowDescription;
+        set => Preferences.Local.ShowDescription = value;
+    }
 
     public bool PresetMode { get; set; }
 
     public void OnEnable()
     {
-        SelectedTab = IsAdvancedMode ? ShowDescriptions ? Tab.DiescriptionMode : Tab.AdvancedSettings : Tab.BasicSettings;
+        SelectedTab = IsAdvancedMode
+            ? ShowDescriptions ? Tab.DiescriptionMode : Tab.AdvancedSettings
+            : Tab.BasicSettings;
         var target = (Target)base.target;
         PresetMode = target.transform.parent?.GetComponent<Target>() != null;
     }
@@ -32,6 +43,8 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
     {
         var target = (Target)base.target;
         CategoryLabel($"{LightLimitChanger.Title} {LightLimitChanger.Version}");
+        EditorGUILayout.Space();
+        ShowLink();
         EditorGUILayout.Space();
         DrawLanguagePicker();
         DrawTabSelector();
@@ -45,12 +58,13 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             {
                 PresetManager.Global.Update(target.PresetName, target);
             }
+
             EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.Space();
         CategoryLabel(L10n.TrStr("category:general-settings"));
         EditorGUILayout.Space();
-        
+
         DoPropertyGUI<LightingSettings>(serializedObject.FindProperty("General.LightingControl"));
         DoPropertyGUI<ColorControlSettings>(serializedObject.FindProperty("General.ColorControl"));
 
@@ -68,7 +82,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField(L10n.TrStr("settings:other/excludes/label"), EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("Excludes"), true);
-            if(ShowDescriptions)
+            if (ShowDescriptions)
             {
                 EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/excludes/description"), MessageType.Info);
             }
@@ -76,7 +90,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField(L10n.TrStr("settings:other/writedefault/label"), EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("WriteDefaults"));
-            if(ShowDescriptions)
+            if (ShowDescriptions)
             {
                 EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/writedefault/description"), MessageType.Info);
             }
@@ -84,20 +98,24 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField(L10n.TrStr("settings:other/target_shader/label"), EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("TargetShader"));
-            if(ShowDescriptions)
+            if (ShowDescriptions)
             {
                 EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/target_shader/description"), MessageType.Info);
             }
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField(L10n.Tr("settings:other/compress-expression-parameters/label"), EditorStyles.boldLabel);
-            ParameterDrawer.PopupCheckbox(EditorGUILayout.GetControlRect(), serializedObject.FindProperty($"General.{nameof(GeneralSettings.CompressionExpressionParameters)}"), L10n.Tr("settings:other/compress-expression-parameters/label"));
+            EditorGUILayout.LabelField(L10n.Tr("settings:other/compress-expression-parameters/label"),
+                EditorStyles.boldLabel);
+            ParameterDrawer.PopupCheckbox(EditorGUILayout.GetControlRect(),
+                serializedObject.FindProperty($"General.{nameof(GeneralSettings.CompressionExpressionParameters)}"),
+                L10n.Tr("settings:other/compress-expression-parameters/label"));
             if (ShowDescriptions)
             {
-                EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/compress-expression-parameters/description"), MessageType.Info);
+                EditorGUILayoutUtils.HelpBox(L10n.Tr("settings:other/compress-expression-parameters/description"),
+                    MessageType.Info);
             }
         }
-        
+
         serializedObject.ApplyModifiedProperties();
     }
 
@@ -140,6 +158,7 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
             IsAdvancedMode = SelectedTab >= Tab.AdvancedSettings;
             ShowDescriptions = SelectedTab > Tab.AdvancedSettings;
         }
+
         EditorGUILayout.Space();
     }
 
@@ -152,5 +171,36 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
         position.x += p.width + 4;
         position.width -= p.width + 4;
         L10n.Localization.DrawLanguagePicker(position);
+    }
+
+    public static void ShowLink()
+    {
+        EditorGUILayout.LabelField(L10n.Tr("link:description"), EditorStyles.boldLabel);
+        DrawWebButton(L10n.TrStr("link:changelog"),
+            "https://twitter.com/search?q=from%3Aazukimochi25%20%23LightLimitChanger&src=typed_query&f=live");
+        DrawWebButton(L10n.TrStr("link:feedback"),
+            "https://docs.google.com/forms/d/e/1FAIpQLSfFP7gQ3EDwFn3pX7i0SioJo2oho2Eo0p84MiQy2vPEU0rq6Q/viewform");
+    }
+
+    /*
+     * Quouted from https://github.com/lilxyzw/lilToon/blob/2ef370dc444172787c075ec3a822438c2bee26cb/Assets/lilToon/Editor/lilEditorGUI.cs#L65
+     *
+     * Copyright (c) 2020-2023 lilxyzw
+     *
+     * Full Licence: https://github.com/lilxyzw/lilToon/blob/master/LICENSE
+     */
+    private static void DrawWebButton(string text, string URL)
+    {
+        var position = EditorGUI.IndentedRect(EditorGUILayout.GetControlRect());
+        var icon = EditorGUIUtility.IconContent("BuildSettings.Web.Small");
+        icon.text = text;
+
+        var style = new GUIStyle(EditorStyles.label) { padding = new RectOffset() };
+        style.normal.textColor = style.focused.textColor;
+        style.hover.textColor = style.focused.textColor;
+        if (GUI.Button(position, icon, style))
+        {
+            Application.OpenURL(URL);
+        }
     }
 }
