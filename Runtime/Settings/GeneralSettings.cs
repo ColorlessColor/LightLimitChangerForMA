@@ -11,7 +11,7 @@ public sealed class GeneralSettings
     /// <summary>
     /// パラメータを圧縮する
     /// </summary>
-    public bool CompressionExpressionParameters = false;
+    public bool CompressionExpressionParameters = true;
 
     public LightingSettings LightingControl = new();
     public ColorControlSettings ColorControl = new();
