@@ -22,7 +22,8 @@ public class LilBacklightSettings : ISettings
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_BacklightColor")]
     [MenuIcon(Icons.Color)]
-    public Parameter<Color> BacklightColor = new (Color.white) {Enable = false};
+    [MinMaxRange(0, 20)]
+    public Parameter<Color> BacklightColor = new (Color.white) {Enable = false, MinMaxRange = new (0, 2) };
     
     [ShaderFeature(BuiltinSupportedShaders.LilToon)]
     [MaterialPropertyName(BuiltinSupportedShaders.LilToon, "_BacklightMainStrength")]

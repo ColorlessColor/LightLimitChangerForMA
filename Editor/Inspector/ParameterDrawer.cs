@@ -86,7 +86,7 @@ internal sealed class ParameterDrawer : PropertyDrawer
                 }
                 else if (valueProp.propertyType == SerializedPropertyType.Color)
                 {
-                    ColorField(p, valueProp, GUIContent.none);
+                    ColorField(p, valueProp, GUIContent.none, range: r);
                 }
                 else if (r is { } v)
                 {
@@ -225,17 +225,29 @@ internal sealed class ParameterDrawer : PropertyDrawer
         }
     }
 
-    public static void ColorField(Rect position, SerializedProperty property, GUIContent label, bool hdr = true)
+    public static void ColorField(Rect position, SerializedProperty property, GUIContent label, bool hdr = true, Vector2? range = null)
     {
         var color = property.colorValue;
-        var intensity = Mathf.Max(color.maxColorComponent, 1);
 
         const float TextFieldWidth = 58;
 
+        EditorGUI.BeginChangeCheck();
         var p = position with { width = position.width - TextFieldWidth - 4 } ;
+        
+        if (range is { } r)
+        {
+            color = new(
+                Mathf.Clamp(color.r, r.x, r.y), 
+                Mathf.Clamp(color.g, r.x, r.y),
+                Mathf.Clamp(color.b, r.x, r.y), 
+                color.a);
+        }
+
+        var intensity = Mathf.Max(color.maxColorComponent, 1);
         var value = EditorGUI.ColorField(p, label, color, true, true, hdr);
         var color2 = (value / intensity) with { a = value.a };
         p.x += p.width + 4;
+        bool flag = EditorGUI.EndChangeCheck();
 
         p.width = TextFieldWidth;
         EditorGUI.BeginChangeCheck();
@@ -243,9 +255,10 @@ internal sealed class ParameterDrawer : PropertyDrawer
         if (EditorGUI.EndChangeCheck() && ColorUtility.TryParseHtmlString(hex, out color2))
         {
             value = (color2 * intensity) with { a = value.a };
+            flag = true;
         }
 
-        if (color != value)
+        if (flag)
         {
             property.colorValue = value;
         }
