@@ -3,12 +3,14 @@ using nadena.dev.ndmf.localization;
 
 namespace io.github.azukimochi;
 
-internal class ErrorMessage : SimpleError
+internal class NdmfMessage : SimpleError
 {
-    public ErrorMessage(string titleKey, ErrorSeverity severity)
+    public NdmfMessage(string titleKey, ErrorSeverity severity, string detailsKey = null, string[] detailsSubst = null)
     {
         TitleKey = titleKey;
         Severity = severity;
+        DetailsKey = detailsKey;
+        DetailsSubst = detailsSubst;
     }
 
     public override Localizer Localizer => L10n.Localizer;
@@ -17,6 +19,9 @@ internal class ErrorMessage : SimpleError
 
     public override ErrorSeverity Severity { get; }
 
+    public override string DetailsKey { get; }
+    public override string[] DetailsSubst { get; }
+
     public static void Throw(string titleKey, ErrorSeverity severity = ErrorSeverity.NonFatal) 
-        => ErrorReport.ReportError(new ErrorMessage(titleKey, severity));
+        => ErrorReport.ReportError(new NdmfMessage(titleKey, severity));
 }
