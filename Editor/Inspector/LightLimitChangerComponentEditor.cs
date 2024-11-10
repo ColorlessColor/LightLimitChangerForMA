@@ -49,19 +49,6 @@ internal sealed partial class LightLimitChangerComponentEditor : Editor
         DrawLanguagePicker();
         DrawTabSelector();
 
-        CategoryLabel(L10n.TrStr("category:preset"));
-        EditorGUILayout.Space();
-        {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.DelayedTextField(serializedObject.FindProperty(nameof(Target.PresetName)), GUIContent.none);
-            if (GUILayout.Button("S", GUILayout.Width(24)))
-            {
-                PresetManager.Global.Update(target.PresetName, target);
-            }
-
-            EditorGUILayout.EndHorizontal();
-        }
-        EditorGUILayout.Space();
         CategoryLabel(L10n.TrStr("category:general-settings"));
         EditorGUILayout.Space();
 
