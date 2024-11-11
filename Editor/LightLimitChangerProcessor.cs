@@ -580,7 +580,6 @@ internal sealed class LightLimitChangerProcessor : IDisposable
 
             presetMenuRoot.GetOrAdd(menuName, menu =>
             {
-                menu.automaticValue = true;
                 return (VRCExMenuControlType.Button, Preset, i);
             }, AssetUtils.FromGUID<Texture2D>(Icons.Preset));
 
@@ -607,7 +606,8 @@ internal sealed class LightLimitChangerProcessor : IDisposable
         mama.layerType = VRCAvatarDescriptor.AnimLayerType.FX;
         mama.animator = controller;
 
-
+        var mapa = Component.gameObject.GetOrAddComponent<ModularAvatarParameters>();
+        mapa.parameters.Add(new() { nameOrPrefix = Preset, saved = false, syncType = ParameterSyncType.Int, localOnly = true });
     }
 
     private static void RemoveEmptySubMenus(MAMenuItem menu)
