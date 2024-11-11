@@ -26,7 +26,7 @@ https://mochis-factory.booth.pm/items/4864776
 ## ライセンス
 本プロジェクトは以下のライセンスで提供されています。
 
-v1.x.x (v1/mainブランチ及びこれの派生) MIT LICENSE
+v1.x.x (v1/mainブランチ及びこれの派生) MIT LICENSE  
 v2.x.x (v2/mainブランチ及びこれの派生) GLP 3.0 LICENSE
 
 また、プロジェクに対する禁止事項として以下を明示しています。  
