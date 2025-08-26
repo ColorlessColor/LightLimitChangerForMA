@@ -18,5 +18,8 @@
     "com.vrchat.avatars" : ">=3.2.0",
     "nadena.dev.modular-avatar" : "^1.9.9",
     "nadena.dev.ndmf" : "^1.4.0"
-  }
+  },
+  "legacyPackages": [
+    "io.github.azukimochi.light-limit-changer"
+  ]
 }
