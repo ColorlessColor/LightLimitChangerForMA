@@ -15,6 +15,7 @@ namespace io.github.azukimochi
 #endif
         public List<UnityEngine.Object> Excludes = new List<UnityEngine.Object>();
         public WriteDefaultsSetting WriteDefaults;
+        public bool AutoRenameParameters = true;
 
 #pragma warning disable CS0612
         public void OnAfterDeserialize()

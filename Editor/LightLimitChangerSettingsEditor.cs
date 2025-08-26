@@ -31,6 +31,7 @@ namespace io.github.azukimochi
         private SerializedProperty IsSeparateLightControl;
         private SerializedProperty Excludes;
         private SerializedProperty WriteDefaults;
+        private SerializedProperty AutoRenameParameters;
 
         private static bool _isOptionFoldoutOpen = true;
         private static bool _isCepareteInitValFoldoutOpen = false;
@@ -66,6 +67,7 @@ namespace io.github.azukimochi
             IsGroupingAdditionalControls = parameters.FindPropertyRelative(nameof(LightLimitChangerParameters.IsGroupingAdditionalControls));
             Excludes = serializedObject.FindProperty(nameof(LightLimitChangerSettings.Excludes));
             WriteDefaults = serializedObject.FindProperty(nameof(LightLimitChangerSettings.WriteDefaults));
+            AutoRenameParameters = serializedObject.FindProperty(nameof(LightLimitChangerSettings.AutoRenameParameters));
         }
 
         public override void OnInspectorGUI()
@@ -215,6 +217,7 @@ namespace io.github.azukimochi
                     EditorGUILayout.PropertyField(OverwriteDefaultLightMinMax, Localization.G("label.override_min_max", "tip.override_min_max"));
                     EditorGUILayout.PropertyField(TargetShaders, Localization.G("label.target_shader", "tip.target_shader"));
                     WriteDefaults.intValue = EditorGUILayout.Popup(Utils.Label("Write Defaults"), WriteDefaults.intValue, new[] { Localization.S("label.match_avatar"), "OFF", "ON" });
+                    EditorGUILayout.PropertyField(AutoRenameParameters, Localization.G("label.auto_rename_parameters", "tip.auto_rename_parameters"));
                     EditorGUILayout.PropertyField(Excludes, Localization.G("label.excludes"));
                 }
             }

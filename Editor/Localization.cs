@@ -6,7 +6,7 @@ namespace io.github.azukimochi
 {
     internal static class Localization
     {
-        private const string PreferenceKey = "io.github.azukimochi.light-limit-changer.lang";
+        private const string PreferenceKey = "io.github.azukimochi.light-limit-changer-v1-esr.lang";
         private static int _SelectedLanguage = EditorPrefs.GetInt(PreferenceKey, 1);
         private static readonly GUIContent[] _SupportedLanguages = new GUIContent[]
         {
@@ -37,16 +37,20 @@ namespace io.github.azukimochi
                 {
                     @"Support for Light Limit Changer v1 has ended with 1.14.4, except for critical bugs.
 Light Limit Changer v2 has been released as its successor, 
-so please consider using the latter version if it becomes unusable.",
+so please consider using the latter version if it becomes unusable.
+This fork is used to enhance the functionality of Light Limit Changer v1 and make some bug fixes.",
                     @"Light Limit Changer v1 の更新は1.14.4をもって重大なバグを除きサポートを終了しました。
 後継として Light Limit Changer v2 がリリースされていますので、
-利用不能となった場合には移行をご検討ください",
+利用不能となった場合には移行をご検討ください。
+This fork is used to enhance the functionality of Light Limit Changer v1 and make some bug fixes.",
                     @"除嚴重錯誤外，Light Limit Changer v1 更新在 1.14.4 之後不再受支援。
 後續版本 Light Limit Changer v2 已經發布，
-因此如果不可用，請考慮使用後一個版本。",
+因此如果不可用，請考慮使用後一個版本。
+本分支用于增强 Light Limit Changer v1 的功能，并进行一些错误修复。",
                     @"除严重错误外，Light Limit Changer v1 更新在 1.14.4 之后不再受支持。
 后续版本 Light Limit Changer v2 已经发布，
-因此如果不可用，请考虑使用后一个版本。",
+因此如果不可用，请考虑使用后一个版本。
+本分支用于增强 Light Limit Changer v1 的功能，并进行一些错误修复。",
                     @"Light Limit Changer v1 업데이트는 1.14.4로 심각한 버그를 제외하고 지원을 종료했습니다.
 후속으로 Light Limit Changer v2가 출시되었으므로 사용 불가능한 경우에는 이후를 고려하십시오."
                 }
@@ -465,6 +469,16 @@ so please consider using the latter version if it becomes unusable.",
                     "도움말"
                 }
             },
+            {
+                "label.auto_rename_parameters", new []
+                {
+                    "Auto rename parameters",
+                    "Auto rename parameters",
+                    "Auto rename parameters",
+                    "自动重命名参数",
+                    "Auto rename parameters"
+                }
+            },
 
             ///////////////////////////////////////////////////////
             // 情報　info
@@ -491,7 +505,7 @@ so please consider using the latter version if it becomes unusable.",
             {
                 "info.re_generate", new []
                 {
-                    "Regenerate", 
+                    "Regenerate",
                     "再生成",
                     "再生成",
                     "重新生成",
@@ -573,7 +587,7 @@ so please consider using the latter version if it becomes unusable.",
             // ヒント tip
             {
                 "tip.select_avatar", new []
-                { 
+                {
                     "Select the avatar to generate animations for",
                     "アニメーションを生成するアバターをセットしてください",
                     "選擇要為其生成動畫的 Avatar",
@@ -583,7 +597,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.use_default", new []
-                { 
+                {
                     "Use the light animation in the initial state",
                     "初期状態でライトのアニメーションを使用します",
                     "在預設狀態下使用亮度動畫",
@@ -593,7 +607,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.save_value", new []
-                { 
+                {
                     "Keep brightness changes in the avatar",
                     "明るさの変更をアバターに保持したままにします",
                     "保持 Avatar 的亮度變化",
@@ -613,7 +627,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.light_max", new []
-                { 
+                {
                     "Brightness upper limit setting",
                     "明るさの上限設定です",
                     "亮度的上限設定",
@@ -623,7 +637,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.light_min", new []
-                { 
+                {
                     "Brightness lower limit setting",
                     "明るさの下限設定です",
                     "亮度的下限設定",
@@ -633,7 +647,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.light_default", new []
-                { 
+                {
                     "Initial brightness setting",
                     "初期の明るさ設定",
                     "預設的亮度設定",
@@ -643,7 +657,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.target_shader", new []
-                { 
+                {
                     "Selects which shader(s) to control",
                     "制御するシェーダーを選択できます",
                     "選擇要控制哪個或哪些著色器",
@@ -653,7 +667,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.allow_color_tmp", new []
-                { 
+                {
                     "Enables color temperature adjustment functionality",
                     "色温度の調節機能を有効化することができます",
                     "啟用色溫調整功能",
@@ -663,7 +677,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.allow_saturation", new []
-                { 
+                {
                     "Enables saturation adjustment functionality",
                     "彩度の調整機能を有効化することができます",
                     "啟用飽和度調整功能",
@@ -673,7 +687,7 @@ so please consider using the latter version if it becomes unusable.",
             },
             {
                 "tip.allow_monochrome", new []
-                { 
+                {
                     "Enables monochrome adjustment functionality",
                     "ライトのモノクロ化の調整機能を有効化することができます",
                     "啟用單色化調整功能",
@@ -739,6 +753,16 @@ so please consider using the latter version if it becomes unusable.",
                     "在播放模式或建置時自動生成動畫",
                     "在构建或播放模式时自动生成动画",
                     "빌드 및 PlayMode 진입 시 애니메이션을 자동으로 생성합니다"
+                }
+            },
+            {
+                "tip.auto_rename_parameters", new []
+                {
+                    "Automatically rename VRC expression parameters at build/play mode",
+                    "Automatically rename VRC expression parameters at build/play mode",
+                    "Automatically rename VRC expression parameters at build/play mode",
+                    "在构建或播放模式时自动重命名参数",
+                    "Automatically rename VRC expression parameters at build/play mode"
                 }
             },
             
@@ -935,7 +959,7 @@ If material colors appear abnormal, please disable these controls and file a bug
 머티리얼 색이 이상해졌다면 이 기능을 사용하지 말고, 제작자에게 버그 리포트를 부탁드립니다."
                 }
             },
-            
+
             {
                 "NDMF.hint.useColorTemporSaturation", new[]
                 {
@@ -959,7 +983,7 @@ You can also significantly reduce the increase in texture memory by atlasing usi
                 @"Excluded or unsupported shaders are used within {0} objects.
 This may cause unrelated properties to be modified by the animation.",
                 @"{0}個のオブジェクト（レンダラー）内で除外されている、または対応していないシェーダーが使用されています。
-これにより、アニメーションによって関係のないプロパティが変更されてしまう可能性があります。", 
+これにより、アニメーションによって関係のないプロパティが変更されてしまう可能性があります。",
                 @"{0} 物件（渲染器）中使用了排除或不支援的著色器。
 這可能會導致動畫更改不相關的屬性。",
                 @"{0} 对象（渲染器）中使用了排除或不受支持的着色器。
@@ -968,7 +992,7 @@ This may cause unrelated properties to be modified by the animation.",
 이로 인해 애니메이션이 연관되지 않은 속성을 변경할 가능성이 있습니다."
                 }
             },
-            
+
             {
                 "NDMF.info.poiyomi_old_version", new[]
                 {

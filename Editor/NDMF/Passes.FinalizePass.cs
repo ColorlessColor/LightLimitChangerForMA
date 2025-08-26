@@ -146,7 +146,7 @@ namespace io.github.azukimochi
                 {
                     var param = parameter;
                     param.saved = session.Parameters.IsValueSave;
-                    param.internalParameter = true;
+                    param.internalParameter = session.Settings.AutoRenameParameters;
                     maParameters.parameters.Add(param);
 
                     var animatorParam = new AnimatorControllerParameter()

@@ -10,7 +10,7 @@ namespace io.github.azukimochi
     {
         public override string QualifiedName => "io.github.azukimochi.light-limit-changer";
         
-        public override string DisplayName => "LightLimitChanger";
+        public override string DisplayName => "LightLimitChanger-v1-esr";
 
         private const string ModularAvatarQualifiedName = "nadena.dev.modular-avatar";
 

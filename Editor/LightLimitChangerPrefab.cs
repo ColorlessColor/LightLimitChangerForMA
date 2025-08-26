@@ -10,12 +10,12 @@ namespace io.github.azukimochi
     [InitializeOnLoad]
     internal static class LightLimitChangerPrefab
     {
-        private const string GeneratedPrefabGUIDKey = "io.github.azukimochi.LightLimitChanger.Prefab";
-        private const string PrefabPath = "Assets/LightLimitChanger/Light Limit Changer.prefab";
+        private const string GeneratedPrefabGUIDKey = "io.github.azukimochi.LightLimitChanger-v1-esr.Prefab";
+        private const string PrefabPath = "Assets/LightLimitChanger-v1-esr/Light Limit Changer.prefab";
 
-        private const string GlobalSettingsIDKey = "io.github.azukimochi.LightLimitChanger.GlobalSettings.ID.Global";
-        private const string GlobalSettingsLocalIDKey = "io.github.azukimochi.LightLimitChanger.GlobalSettings.ID.Local";
-        private const string GlobalSettingsValueKey = "io.github.azukimochi.LightLimitChanger.GlobalSettings.Value";
+        private const string GlobalSettingsIDKey = "io.github.azukimochi.LightLimitChanger-v1-esr.GlobalSettings.ID.Global";
+        private const string GlobalSettingsLocalIDKey = "io.github.azukimochi.LightLimitChanger-v1-esr.GlobalSettings.ID.Local";
+        private const string GlobalSettingsValueKey = "io.github.azukimochi.LightLimitChanger-v1-esr.GlobalSettings.Value";
 
         static LightLimitChangerPrefab()
         {
