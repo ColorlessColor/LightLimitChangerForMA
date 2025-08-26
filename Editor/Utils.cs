@@ -242,7 +242,7 @@ namespace io.github.azukimochi
             EditorGUILayout.LabelField(Localization.S("outdated.title"), boldLabel);
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
-                EditorGUILayout.LabelField(Localization.S("outdated.message"), GUILayout.Height(EditorGUIUtility.singleLineHeight * 2.5f));
+                EditorGUILayout.LabelField(Localization.S("outdated.message"), GUILayout.Height(EditorGUIUtility.singleLineHeight * 4.5f));
             }
             EditorGUILayout.Space(5);
             

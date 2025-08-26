@@ -9,7 +9,7 @@ namespace io.github.azukimochi
 {
     public static class LightLimitChanger
     {
-        public const string Title = "Light Limit Changer For MA";
+        public const string Title = "Light Limit Changer For MA v1 ESR";
         private const string ContextMenuPath = "GameObject/Light Limit Changer/Setup";
         private const int ContextMenuPriority = 49;
 
