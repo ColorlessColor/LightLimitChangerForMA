@@ -1,4 +1,7 @@
 # LightLimitChanger
+
+## This is a fork of LLC-v1, used to fix bugs and extend its lifecycle
+
 ### これは何
 シェーダーの明るさの下限/上限のアニメーションを生成するツールです。  
 現在Liltoon / Poiyomi / Sunao シェーダーに対応
